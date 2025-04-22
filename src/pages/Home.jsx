@@ -2,12 +2,13 @@ import React, { useState, useEffect } from 'react'
 import Login from './auth/Login'
 import Register from './auth/Register'
 import ForgotPassword from './auth/ForgotPassword'
+import Menu from './auth/Menu'
 import '../styles/formTransitions.css'
 
 const Home = () => {
-  const [activeForm, setActiveForm] = useState('login')
+  const [activeForm, setActiveForm] = useState('menu')
   const [isAnimating, setIsAnimating] = useState(false)
-  const [currentForm, setCurrentForm] = useState('login')
+  const [currentForm, setCurrentForm] = useState('menu')
 
   useEffect(() => {
     if (activeForm !== currentForm) {
@@ -22,14 +23,23 @@ const Home = () => {
 
   const renderForm = () => {
     switch (currentForm) {
+      case 'menu':
+        return <Menu onLoginClick={() => setActiveForm('login')} onRegisterClick={() => setActiveForm('register')} />
       case 'login':
-        return <Login onRegisterClick={() => setActiveForm('register')} onForgotClick={() => setActiveForm('forgot')} />
+        return <Login
+          onRegisterClick={() => setActiveForm('register')}
+          onForgotClick={() => setActiveForm('forgot')}
+          onBackToMenuClick={() => setActiveForm('menu')}
+        />
       case 'register':
-        return <Register onLoginClick={() => setActiveForm('login')} />
+        return <Register
+          onLoginClick={() => setActiveForm('login')}
+          onBackToMenuClick={() => setActiveForm('menu')}
+        />
       case 'forgot':
         return <ForgotPassword onLoginClick={() => setActiveForm('login')} />
       default:
-        return <Login onRegisterClick={() => setActiveForm('register')} onForgotClick={() => setActiveForm('forgot')} />
+        return <Menu onLoginClick={() => setActiveForm('login')} onRegisterClick={() => setActiveForm('register')} />
     }
   }
 
