@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
-const Login = () => {
+const Login = ({ onRegisterClick, onForgotClick }) => {
   const [formData, setFormData] = useState({
     email: '',
     password: ''
@@ -35,6 +35,9 @@ const Login = () => {
 
   return (
     <div>
+      <h2 className="text-3xl font-bold text-gray-800 mb-6">Welcome Back</h2>
+      <p className="text-gray-600 mb-8">Sign in to your account to continue</p>
+
       {error && (
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4" role="alert">
           <span className="block sm:inline">{error}</span>
@@ -81,27 +84,34 @@ const Login = () => {
             </label>
           </div>
 
-          <Link to="/forgot-password" className="text-sm text-indigo-600 hover:text-indigo-500">
+          <button
+            type="button"
+            onClick={onForgotClick}
+            className="text-sm text-indigo-600 hover:text-indigo-500 font-medium"
+          >
             Forgot password?
-          </Link>
+          </button>
         </div>
 
         <div>
           <button
             type="submit"
-            className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
           >
             Sign in
           </button>
         </div>
       </form>
 
-      <div className="mt-4 text-center">
+      <div className="mt-6 text-center">
         <p className="text-sm text-gray-600">
           Don't have an account?{' '}
-          <Link to="/register" className="font-medium text-indigo-600 hover:text-indigo-500">
+          <button
+            onClick={onRegisterClick}
+            className="font-medium text-indigo-600 hover:text-indigo-500"
+          >
             Sign up
-          </Link>
+          </button>
         </p>
       </div>
     </div>
