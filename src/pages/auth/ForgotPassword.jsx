@@ -24,7 +24,7 @@ const ForgotPassword = ({ onLoginClick }) => {
   }
 
   return (
-    <div>
+    <div className="auth-form-container">
       <h2 className="text-3xl font-bold text-white mb-2">Reset Your Password</h2>
 
       {error && (
@@ -61,7 +61,7 @@ const ForgotPassword = ({ onLoginClick }) => {
             <div>
               <button
                 type="submit"
-                className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-lg text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors duration-200"
+                className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-lg text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-all duration-200"
               >
                 Send Reset Instructions
               </button>

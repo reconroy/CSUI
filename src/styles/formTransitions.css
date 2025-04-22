@@ -1,0 +1,44 @@
+/* Form transition animations */
+.transition-opacity {
+  transition-property: opacity;
+  transition-timing-function: ease-in-out;
+}
+
+/* Add a subtle glow effect to form inputs on focus */
+input:focus,
+textarea:focus,
+select:focus {
+  box-shadow: 0 0 0 2px rgba(74, 222, 128, 0.2);
+}
+
+/* Add a subtle hover effect to buttons */
+button {
+  transition: all 0.2s ease;
+}
+
+button:hover {
+  transform: translateY(-1px);
+}
+
+button:active {
+  transform: translateY(1px);
+}
+
+/* Form container styles */
+.auth-form-container {
+  position: relative;
+}
+
+/* Button shine effect */
+@keyframes shine-button {
+  from {
+    transform: translateX(-100%) rotate(45deg);
+  }
+  to {
+    transform: translateX(100%) rotate(45deg);
+  }
+}
+
+.group:hover .group-hover\:animate-shine {
+  animation: shine-button 1s ease-in-out;
+}
