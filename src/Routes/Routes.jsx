@@ -1,14 +1,14 @@
 import { createBrowserRouter, Navigate } from 'react-router-dom';
-import OuterLayout from './layouts/OuterLayout';
-import InnerLayout from './layouts/InnerLayout';
-import Home from './pages/Home';
-import Login from './pages/auth/Login';
-import Register from './pages/auth/Register';
-import ForgotPassword from './pages/auth/ForgotPassword';
-import Profile from './pages/user/Profile';
-import Settings from './pages/user/Settings';
-import ChangePassword from './pages/user/ChangePassword';
-import CodeEditor from './pages/codespace/CodeEditor';
+import OuterLayout from '../layouts/OuterLayout';
+import InnerLayout from '../layouts/InnerLayout';
+import Home from '../pages/Home';
+import Login from '../pages/auth/Login';
+import Register from '../pages/auth/Register';
+import ForgotPassword from '../pages/auth/ForgotPassword';
+import Profile from '../pages/user/Profile';
+import Settings from '../pages/user/Settings';
+import ChangePassword from '../pages/user/ChangePassword';
+import CodeEditor from '../pages/codespace/CodeEditor';
 
 // Auth guard for protected routes
 const ProtectedRoute = ({ children }) => {
