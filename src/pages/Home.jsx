@@ -20,47 +20,67 @@ const Home = () => {
   }
 
   return (
-    <div className="w-full max-w-6xl bg-white rounded-2xl shadow-xl overflow-hidden flex flex-col md:flex-row">
+    <div className="w-full max-w-7xl flex flex-col md:flex-row gap-8 md:gap-16">
       {/* Left side - Content */}
-      <div className="w-full md:w-1/2 bg-gradient-to-br from-indigo-600 to-purple-700 p-12 md:py-20 md:px-12 flex flex-col justify-center">
+      <div className="w-full md:w-1/2 flex flex-col justify-center">
         <div className="text-white">
-          <h1 className="text-4xl md:text-5xl font-bold mb-6">CodeSpace</h1>
-          <h2 className="text-2xl md:text-3xl font-semibold mb-4">Your Collaborative Coding Platform</h2>
-          <p className="text-indigo-100 mb-8 text-lg">
+          <div className="flex items-center mb-6">
+            <div className="bg-green-500 w-10 h-10 rounded-lg mr-3 flex items-center justify-center">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-gray-900" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+              </svg>
+            </div>
+            <h1 className="text-4xl md:text-5xl font-bold">CodeSpace</h1>
+          </div>
+
+          <h2 className="text-2xl md:text-3xl font-semibold mb-4 text-green-400">Your Collaborative Coding Platform</h2>
+          <p className="text-gray-300 mb-8 text-lg leading-relaxed">
             Write, share, and collaborate on code in real-time. Join thousands of developers who trust CodeSpace for their coding needs.
           </p>
-          <div className="space-y-4">
-            <div className="flex items-center">
-              <div className="bg-indigo-500 rounded-full p-2 mr-4">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+
+          <div className="space-y-6">
+            <div className="flex items-start">
+              <div className="bg-gray-800 border border-green-500 rounded-lg p-2 mr-4">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
                 </svg>
               </div>
-              <span className="text-lg">Real-time collaboration</span>
+              <div>
+                <h3 className="text-lg font-semibold text-green-400">Real-time collaboration</h3>
+                <p className="text-gray-400">Work together with your team in real-time, seeing changes as they happen.</p>
+              </div>
             </div>
-            <div className="flex items-center">
-              <div className="bg-indigo-500 rounded-full p-2 mr-4">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+
+            <div className="flex items-start">
+              <div className="bg-gray-800 border border-green-500 rounded-lg p-2 mr-4">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129" />
                 </svg>
               </div>
-              <span className="text-lg">Multiple language support</span>
+              <div>
+                <h3 className="text-lg font-semibold text-green-400">Multiple language support</h3>
+                <p className="text-gray-400">Code in JavaScript, Python, Java, C++, and many more languages.</p>
+              </div>
             </div>
-            <div className="flex items-center">
-              <div className="bg-indigo-500 rounded-full p-2 mr-4">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+
+            <div className="flex items-start">
+              <div className="bg-gray-800 border border-green-500 rounded-lg p-2 mr-4">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                 </svg>
               </div>
-              <span className="text-lg">Secure cloud storage</span>
+              <div>
+                <h3 className="text-lg font-semibold text-green-400">Secure cloud storage</h3>
+                <p className="text-gray-400">Your code is securely stored in the cloud, accessible from anywhere.</p>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
       {/* Right side - Auth Forms */}
-      <div className="w-full md:w-1/2 p-8 md:p-12 flex items-center justify-center">
-        <div className="w-full max-w-md">
+      <div className="w-full md:w-1/2 flex items-center justify-center">
+        <div className="w-full max-w-md bg-gray-800 p-8 rounded-xl border border-gray-700 shadow-2xl">
           {renderForm()}
         </div>
       </div>

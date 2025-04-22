@@ -35,38 +35,38 @@ const Login = ({ onRegisterClick, onForgotClick }) => {
 
   return (
     <div>
-      <h2 className="text-3xl font-bold text-gray-800 mb-6">Welcome Back</h2>
-      <p className="text-gray-600 mb-8">Sign in to your account to continue</p>
+      <h2 className="text-3xl font-bold text-white mb-2">Welcome Back</h2>
+      <p className="text-gray-400 mb-6">Sign in to your account to continue</p>
 
       {error && (
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4" role="alert">
+        <div className="bg-red-900/50 border border-red-500 text-red-200 px-4 py-3 rounded-lg mb-4" role="alert">
           <span className="block sm:inline">{error}</span>
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-5">
         <div>
-          <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+          <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-1">Email</label>
           <input
             type="email"
             id="email"
             name="email"
             value={formData.email}
             onChange={handleChange}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+            className="w-full px-3 py-2 bg-gray-700 border border-gray-600 text-white rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500"
             required
           />
         </div>
 
         <div>
-          <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+          <label htmlFor="password" className="block text-sm font-medium text-gray-300 mb-1">Password</label>
           <input
             type="password"
             id="password"
             name="password"
             value={formData.password}
             onChange={handleChange}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+            className="w-full px-3 py-2 bg-gray-700 border border-gray-600 text-white rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500"
             required
           />
         </div>
@@ -77,9 +77,9 @@ const Login = ({ onRegisterClick, onForgotClick }) => {
               id="remember-me"
               name="remember-me"
               type="checkbox"
-              className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+              className="h-4 w-4 text-green-500 focus:ring-green-400 bg-gray-700 border-gray-600 rounded"
             />
-            <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-700">
+            <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-300">
               Remember me
             </label>
           </div>
@@ -87,7 +87,7 @@ const Login = ({ onRegisterClick, onForgotClick }) => {
           <button
             type="button"
             onClick={onForgotClick}
-            className="text-sm text-indigo-600 hover:text-indigo-500 font-medium"
+            className="text-sm text-green-400 hover:text-green-300 font-medium"
           >
             Forgot password?
           </button>
@@ -96,7 +96,7 @@ const Login = ({ onRegisterClick, onForgotClick }) => {
         <div>
           <button
             type="submit"
-            className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-lg text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors duration-200"
           >
             Sign in
           </button>
@@ -104,11 +104,11 @@ const Login = ({ onRegisterClick, onForgotClick }) => {
       </form>
 
       <div className="mt-6 text-center">
-        <p className="text-sm text-gray-600">
+        <p className="text-sm text-gray-400">
           Don't have an account?{' '}
           <button
             onClick={onRegisterClick}
-            className="font-medium text-indigo-600 hover:text-indigo-500"
+            className="font-medium text-green-400 hover:text-green-300"
           >
             Sign up
           </button>
