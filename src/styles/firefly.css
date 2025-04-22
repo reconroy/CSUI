@@ -13,7 +13,13 @@
  *
  * 3. GLOW EFFECT: The pulsing glow effect is controlled by the firefly-glow
  *    animation, which changes opacity and brightness over time.
+ *
+ * 4. MOUSE INTERACTION: Fireflies will move away from the mouse cursor when it gets
+ *    close to them. This is controlled by the mouseRepelRadius and mouseRepelStrength
+ *    props in the Firefly component. When the mouse moves away, fireflies will
+ *    gradually return to their original positions.
  */
+/* Container for all fireflies - covers the entire screen */
 .firefly-container {
   position: absolute;
   top: 0;
@@ -21,10 +27,14 @@
   width: 100%;
   height: 100%;
   overflow: hidden;
-  pointer-events: none;
-  z-index: 1;
+  pointer-events: none; /* Allows clicking through the container */
+  z-index: 2; /* Ensure fireflies appear above background but below content */
+  /* Enable hardware acceleration for better performance */
+  transform: translateZ(0);
+  will-change: contents;
 }
 
+/* Individual firefly styling */
 .firefly {
   position: absolute;
   width: 3px;
@@ -35,7 +45,18 @@
   animation-timing-function: ease-in-out;
   animation-iteration-count: infinite;
   animation-direction: normal;
-  will-change: transform, opacity, box-shadow; /* Performance optimization */
+  will-change: transform, opacity, box-shadow, left, top; /* Performance optimization */
+  opacity: 0.8; /* Ensure fireflies are visible */
+}
+
+/* Firefly being repelled by mouse */
+.firefly.repelling {
+  /* Pause the standard animations when being repelled */
+  animation-play-state: paused;
+  /* Add a subtle glow effect when repelled */
+  filter: brightness(1.5);
+  /* Ensure smooth movement */
+  will-change: left, top;
 }
 
 /* MOVEMENT PATTERN 1: Standard float pattern
@@ -113,11 +134,11 @@
  */
 @keyframes firefly-glow {
   0%, 100% {
-    opacity: 0.2;  /* Minimum visibility */
-    filter: brightness(0.6);  /* Minimum brightness */
+    opacity: 0.4;  /* Minimum visibility - increased for better visibility */
+    filter: brightness(0.8);  /* Minimum brightness - increased */
   }
   50% {
-    opacity: 0.8;  /* Maximum visibility */
-    filter: brightness(1.2);  /* Maximum brightness - increase for more intense glow */
+    opacity: 1.0;  /* Maximum visibility - full opacity */
+    filter: brightness(1.5);  /* Maximum brightness - increased for more intense glow */
   }
 }

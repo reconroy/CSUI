@@ -13,8 +13,9 @@ const OuterLayout = () => {
 
       {/* Firefly animation */}
       <Firefly
-        // NUMBER: 40 fireflies - Moderate amount for visual effect without performance impact
-        count={40}
+        // NUMBER: 100 fireflies - Higher count for more visible effect
+        // Try values between 50-200 to see the difference
+        count={100}
 
         // COLORS: Green to match the application theme
         color="rgba(74, 222, 128, 0.8)"  // Main firefly color (green)
@@ -35,6 +36,12 @@ const OuterLayout = () => {
         // POSITION: Slightly offset from the top (5%) with concentration at the top
         topOffset={5}  // Start 5% from the top of the screen
         concentrateTop={true}  // More fireflies appear near the top than bottom
+
+        // MOUSE INTERACTION: Fireflies move away from the mouse cursor
+        // - Increase mouseRepelRadius to make fireflies react from further away
+        // - Increase mouseRepelStrength to make fireflies move away more dramatically
+        mouseRepelRadius={150}  // Distance in pixels that affects fireflies (px)
+        mouseRepelStrength={0.8}  // Strength of repulsion effect (0-1)
       />
 
       {/* Content */}
