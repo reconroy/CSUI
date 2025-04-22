@@ -35,8 +35,8 @@ const Login = ({ onRegisterClick, onForgotClick }) => {
 
   return (
     <div className="auth-form-container">
-      <h2 className="text-3xl font-bold text-white mb-2">Welcome Back</h2>
-      <p className="text-gray-400 mb-6">Sign in to your account to continue</p>
+      <h2 className="text-3xl font-bold text-white mb-2 text-center">Welcome Back</h2>
+      <p className="text-gray-400 mb-6 text-center">Sign in to your account to continue</p>
 
       {error && (
         <div className="bg-red-900/50 border border-red-500 text-red-200 px-4 py-3 rounded-lg mb-4" role="alert">

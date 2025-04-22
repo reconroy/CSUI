@@ -25,7 +25,7 @@ const ForgotPassword = ({ onLoginClick }) => {
 
   return (
     <div className="auth-form-container">
-      <h2 className="text-3xl font-bold text-white mb-2">Reset Your Password</h2>
+      <h2 className="text-3xl font-bold text-white mb-2 text-center">Reset Your Password</h2>
 
       {error && (
         <div className="bg-red-900/50 border border-red-500 text-red-200 px-4 py-3 rounded-lg mb-4" role="alert">
@@ -34,14 +34,14 @@ const ForgotPassword = ({ onLoginClick }) => {
       )}
 
       {message && (
-        <div className="bg-green-900/50 border border-green-500 text-green-200 px-4 py-3 rounded-lg mb-4" role="alert">
+        <div className="text-center bg-green-900/50 border border-green-500 text-green-200 px-4 py-3 rounded-lg mb-4" role="alert">
           <span className="block sm:inline">{message}</span>
         </div>
       )}
 
       {!isSubmitted ? (
         <>
-          <p className="text-gray-400 mb-6">
+          <p className="text-gray-400 mb-6 text-center">
             Enter your email address and we'll send you instructions to reset your password.
           </p>
 

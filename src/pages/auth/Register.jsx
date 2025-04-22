@@ -42,8 +42,8 @@ const Register = ({ onLoginClick }) => {
 
   return (
     <div className="auth-form-container">
-      <h2 className="text-3xl font-bold text-white mb-2">Create an Account</h2>
-      <p className="text-gray-400 mb-6">Join CodeSpace and start coding today</p>
+      <h2 className="text-3xl font-bold text-white mb-2 text-center">Create an Account</h2>
+      <p className="text-gray-400 mb-6 text-center">Join CodeSpace and start coding today</p>
 
       {error && (
         <div className="bg-red-900/50 border border-red-500 text-red-200 px-4 py-3 rounded-lg mb-4" role="alert">
