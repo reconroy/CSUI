@@ -137,6 +137,9 @@ const Firefly = ({
 
       // Update fireflies with pixel positions
       const updatedFireflies = fireflies.map(fly => {
+        // Skip if already has pixel positions to avoid infinite loop
+        if (fly.leftPx !== 0 && fly.topPx !== 0) return fly;
+
         const leftPx = (fly.leftPercent / 100) * containerWidth;
         const topPx = (fly.topPercent / 100) * containerHeight;
 
@@ -151,82 +154,96 @@ const Firefly = ({
 
       setFireflies(updatedFireflies);
     }
-  }, [fireflies.length, containerRef.current]);
+  }, [fireflies.length]);
 
   // Handle mouse repulsion effect
   useEffect(() => {
     if (!containerRef.current || fireflies.length === 0) return;
 
-    const containerWidth = containerRef.current.offsetWidth;
-    const containerHeight = containerRef.current.offsetHeight;
+    // Use requestAnimationFrame for smoother animation and to avoid excessive re-renders
+    let animationFrameId;
 
-    // Calculate new positions based on mouse proximity
-    const updatedFireflies = fireflies.map(fly => {
-      // Skip if we don't have pixel positions yet
-      if (fly.leftPx === undefined) return fly;
+    const updatePositions = () => {
+      const containerWidth = containerRef.current.offsetWidth;
+      const containerHeight = containerRef.current.offsetHeight;
 
-      // Calculate distance from mouse to firefly
-      const dx = fly.leftPx - mousePosition.x;
-      const dy = fly.topPx - mousePosition.y;
-      const distance = Math.sqrt(dx * dx + dy * dy);
+      // Calculate new positions based on mouse proximity
+      const updatedFireflies = [...fireflies].map(fly => {
+        // Skip if we don't have pixel positions yet
+        if (fly.leftPx === undefined || fly.leftPx === 0) return fly;
 
-      // If mouse is close enough, repel the firefly
-      if (distance < mouseRepelRadius) {
-        // Calculate repulsion force (stronger when closer)
-        const force = (1 - distance / mouseRepelRadius) * mouseRepelStrength;
+        // Calculate distance from mouse to firefly
+        const dx = fly.leftPx - mousePosition.x;
+        const dy = fly.topPx - mousePosition.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
 
-        // Calculate new position
-        let newLeftPx = fly.leftPx + (dx / distance) * force * 50;
-        let newTopPx = fly.topPx + (dy / distance) * force * 50;
+        // If mouse is close enough, repel the firefly
+        if (distance < mouseRepelRadius) {
+          // Calculate repulsion force (stronger when closer)
+          const force = (1 - distance / mouseRepelRadius) * mouseRepelStrength;
 
-        // Keep fireflies within container bounds
-        newLeftPx = Math.max(0, Math.min(containerWidth, newLeftPx));
-        newTopPx = Math.max(0, Math.min(containerHeight, newTopPx));
+          // Calculate new position
+          let newLeftPx = fly.leftPx + (dx / distance) * force * 50;
+          let newTopPx = fly.topPx + (dy / distance) * force * 50;
 
-        // Convert back to percentages for CSS
-        const newLeftPercent = (newLeftPx / containerWidth) * 100;
-        const newTopPercent = (newTopPx / containerHeight) * 100;
+          // Keep fireflies within container bounds
+          newLeftPx = Math.max(0, Math.min(containerWidth, newLeftPx));
+          newTopPx = Math.max(0, Math.min(containerHeight, newTopPx));
 
-        return {
-          ...fly,
-          leftPx: newLeftPx,
-          topPx: newTopPx,
-          leftPercent: newLeftPercent,
-          topPercent: newTopPercent,
-          repelling: true
-        };
-      } else if (fly.repelling) {
-        // If mouse is far enough and firefly was repelling, gradually return to original position
-        const returnSpeed = 0.1; // How quickly fireflies return (0-1)
+          // Convert back to percentages for CSS
+          const newLeftPercent = (newLeftPx / containerWidth) * 100;
+          const newTopPercent = (newTopPx / containerHeight) * 100;
 
-        // Move back toward original position
-        const newLeftPx = fly.leftPx + (fly.originalLeftPx - fly.leftPx) * returnSpeed;
-        const newTopPx = fly.topPx + (fly.originalTopPx - fly.topPx) * returnSpeed;
+          return {
+            ...fly,
+            leftPx: newLeftPx,
+            topPx: newTopPx,
+            leftPercent: newLeftPercent,
+            topPercent: newTopPercent,
+            repelling: true
+          };
+        } else if (fly.repelling) {
+          // If mouse is far enough and firefly was repelling, gradually return to original position
+          const returnSpeed = 0.1; // How quickly fireflies return (0-1)
 
-        // Convert back to percentages
-        const newLeftPercent = (newLeftPx / containerWidth) * 100;
-        const newTopPercent = (newTopPx / containerHeight) * 100;
+          // Move back toward original position
+          const newLeftPx = fly.leftPx + (fly.originalLeftPx - fly.leftPx) * returnSpeed;
+          const newTopPx = fly.topPx + (fly.originalTopPx - fly.topPx) * returnSpeed;
 
-        // If close enough to original position, stop repelling
-        const returnedToOriginal =
-          Math.abs(newLeftPx - fly.originalLeftPx) < 1 &&
-          Math.abs(newTopPx - fly.originalTopPx) < 1;
+          // Convert back to percentages
+          const newLeftPercent = (newLeftPx / containerWidth) * 100;
+          const newTopPercent = (newTopPx / containerHeight) * 100;
 
-        return {
-          ...fly,
-          leftPx: newLeftPx,
-          topPx: newTopPx,
-          leftPercent: newLeftPercent,
-          topPercent: newTopPercent,
-          repelling: !returnedToOriginal
-        };
-      }
+          // If close enough to original position, stop repelling
+          const returnedToOriginal =
+            Math.abs(newLeftPx - fly.originalLeftPx) < 1 &&
+            Math.abs(newTopPx - fly.originalTopPx) < 1;
 
-      return fly;
-    });
+          return {
+            ...fly,
+            leftPx: newLeftPx,
+            topPx: newTopPx,
+            leftPercent: newLeftPercent,
+            topPercent: newTopPercent,
+            repelling: !returnedToOriginal
+          };
+        }
 
-    setFireflies(updatedFireflies);
-  }, [mousePosition, mouseRepelRadius, mouseRepelStrength]);
+        return fly;
+      });
+
+      setFireflies(updatedFireflies);
+      animationFrameId = requestAnimationFrame(updatePositions);
+    };
+
+    // Start the animation loop
+    animationFrameId = requestAnimationFrame(updatePositions);
+
+    // Clean up
+    return () => {
+      cancelAnimationFrame(animationFrameId);
+    };
+  }, [mousePosition.x, mousePosition.y, mouseRepelRadius, mouseRepelStrength]);
 
   return (
     <div className="firefly-container" ref={containerRef}>

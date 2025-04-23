@@ -1,23 +1,41 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import useAuthStore from '../../store/authStore'
+import OTPVerification from '../../components/auth/OTPVerification'
 
 const Login = ({ onRegisterClick, onForgotClick, onBackToMenuClick }) => {
   const [formData, setFormData] = useState({
     email: '',
-    password: ''
+    password: '',
+    rememberMe: false
   })
   const [error, setError] = useState('')
+  const [showOTPVerification, setShowOTPVerification] = useState(false)
+  const [userId, setUserId] = useState(null)
   const navigate = useNavigate()
 
+  // Get auth store state and actions
+  const { login, isLoading, error: authError } = useAuthStore()
+
+  // Set error from auth store
+  useEffect(() => {
+    if (authError) {
+      setError(authError)
+    }
+  }, [authError])
+
   const handleChange = (e) => {
-    const { name, value } = e.target
+    const { name, value, type, checked } = e.target
     setFormData(prev => ({
       ...prev,
-      [name]: value
+      [name]: type === 'checkbox' ? checked : value
     }))
+
+    // Clear error when user types
+    if (error) setError('')
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     setError('')
 
@@ -27,10 +45,37 @@ const Login = ({ onRegisterClick, onForgotClick, onBackToMenuClick }) => {
       return
     }
 
-    // For demo purposes, we'll just set isAuthenticated to true
-    // In a real app, you would validate credentials with your API
-    localStorage.setItem('isAuthenticated', 'true')
-    navigate('/dashboard', { replace: true })
+    try {
+      // Login user
+      const response = await login(
+        formData.email,
+        formData.password,
+        formData.rememberMe
+      )
+
+      // If login requires verification, show OTP screen
+      if (response.requiresVerification) {
+        setUserId(response.userId)
+        setShowOTPVerification(true)
+        return
+      }
+
+      // Redirect to dashboard on success
+      navigate('/dashboard', { replace: true })
+    } catch (error) {
+      setError(error.message || 'Login failed. Please try again.')
+    }
+  }
+
+  // If showing OTP verification, render OTP component
+  if (showOTPVerification && userId) {
+    return (
+      <OTPVerification
+        userId={userId}
+        email={formData.email}
+        onBackToRegister={() => setShowOTPVerification(false)}
+      />
+    )
   }
 
   return (
@@ -74,12 +119,14 @@ const Login = ({ onRegisterClick, onForgotClick, onBackToMenuClick }) => {
         <div className="flex items-center justify-between">
           <div className="flex items-center">
             <input
-              id="remember-me"
-              name="remember-me"
+              id="rememberMe"
+              name="rememberMe"
               type="checkbox"
+              checked={formData.rememberMe}
+              onChange={handleChange}
               className="h-4 w-4 text-green-500 focus:ring-green-400 bg-gray-700 border-gray-600 rounded"
             />
-            <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-300">
+            <label htmlFor="rememberMe" className="ml-2 block text-sm text-gray-300">
               Remember me
             </label>
           </div>
@@ -96,10 +143,11 @@ const Login = ({ onRegisterClick, onForgotClick, onBackToMenuClick }) => {
         <div>
           <button
             type="submit"
-            className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-lg text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-all duration-200 relative overflow-hidden group"
+            disabled={isLoading}
+            className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-lg text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-all duration-200 relative overflow-hidden group disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <span className="absolute inset-0 w-full h-full bg-gradient-to-br from-green-500/0 via-green-500/30 to-green-500/0 opacity-0 group-hover:opacity-100 group-hover:animate-shine"></span>
-            <span className="relative">Sign in</span>
+            <span className="relative">{isLoading ? 'Signing in...' : 'Sign in'}</span>
           </button>
         </div>
       </form>
