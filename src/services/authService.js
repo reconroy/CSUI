@@ -29,7 +29,16 @@ export const register = async (userData) => {
  * @returns {Promise} - Response data
  */
 export const verifyOTP = async (userId, otp) => {
-  return await api.post('/auth/verify-otp', { userId, otp });
+  const response = await api.post('/auth/verify-otp', { userId, otp });
+
+  // Store token and user data in localStorage (same as login)
+  if (response.token) {
+    localStorage.setItem('token', response.token);
+    localStorage.setItem('user', JSON.stringify(response.user));
+    localStorage.setItem('isAuthenticated', 'true');
+  }
+
+  return response;
 };
 
 /**
@@ -50,14 +59,14 @@ export const resendOTP = async (userId) => {
  */
 export const login = async (email, password, rememberMe = false) => {
   const response = await api.post('/auth/login', { email, password, rememberMe });
-  
+
   // Store token and user data in localStorage
   if (response.token) {
     localStorage.setItem('token', response.token);
     localStorage.setItem('user', JSON.stringify(response.user));
     localStorage.setItem('isAuthenticated', 'true');
   }
-  
+
   return response;
 };
 

@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
 import useAuthStore from '../../store/authStore'
 import OTPVerification from '../../components/auth/OTPVerification'
 
@@ -11,11 +10,11 @@ const Register = ({ onLoginClick, onBackToMenuClick }) => {
     confirmPassword: ''
   })
   const [error, setError] = useState('')
+  const [message, setMessage] = useState('')
   const [isCheckingEmail, setIsCheckingEmail] = useState(false)
   const [isEmailValid, setIsEmailValid] = useState(false)
   const [showOTPVerification, setShowOTPVerification] = useState(false)
   const [userId, setUserId] = useState(null)
-  const navigate = useNavigate()
 
   // Get auth store state and actions
   const { register, checkEmail, isLoading, error: authError } = useAuthStore()
@@ -104,6 +103,8 @@ const Register = ({ onLoginClick, onBackToMenuClick }) => {
     }
 
     try {
+      setMessage('')
+
       // Register user
       const response = await register({
         name: formData.name,
@@ -111,9 +112,14 @@ const Register = ({ onLoginClick, onBackToMenuClick }) => {
         password: formData.password
       })
 
-      // Show OTP verification screen
-      setUserId(response.userId)
-      setShowOTPVerification(true)
+      // Show success message
+      setMessage('Registration successful! Please verify your email with the OTP sent.')
+
+      // Show OTP verification screen after a short delay
+      setTimeout(() => {
+        setUserId(response.userId)
+        setShowOTPVerification(true)
+      }, 1500)
     } catch (error) {
       setError(error.message || 'Registration failed. Please try again.')
     }
@@ -138,6 +144,12 @@ const Register = ({ onLoginClick, onBackToMenuClick }) => {
       {error && (
         <div className="bg-red-900/50 border border-red-500 text-red-200 px-4 py-3 rounded-lg mb-4" role="alert">
           <span className="block sm:inline">{error}</span>
+        </div>
+      )}
+
+      {message && (
+        <div className="bg-green-900/50 border border-green-500 text-green-200 px-4 py-3 rounded-lg mb-4" role="alert">
+          <span className="block sm:inline">{message}</span>
         </div>
       )}
 
