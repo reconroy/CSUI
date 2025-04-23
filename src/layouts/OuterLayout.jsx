@@ -40,7 +40,7 @@ const OuterLayout = () => {
         // MOUSE INTERACTION: Fireflies move away from the mouse cursor
         // - Increase mouseRepelRadius to make fireflies react from further away
         // - Increase mouseRepelStrength to make fireflies move away more dramatically
-        mouseRepelRadius={150}  // Distance in pixels that affects fireflies (px)
+        mouseRepelRadius={100}  // Distance in pixels that affects fireflies (px)
         mouseRepelStrength={0.8}  // Strength of repulsion effect (0-1)
       />
 
