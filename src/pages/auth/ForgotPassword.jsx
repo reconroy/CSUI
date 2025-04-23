@@ -1,12 +1,28 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import useAuthStore from '../../store/authStore'
 
 const ForgotPassword = ({ onLoginClick }) => {
+  const [step, setStep] = useState(1) // 1: Email, 2: OTP, 3: New Password
   const [email, setEmail] = useState('')
+  const [otp, setOtp] = useState('')
+  const [userId, setUserId] = useState(null)
+  const [newPassword, setNewPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
   const [message, setMessage] = useState('')
   const [error, setError] = useState('')
-  const [isSubmitted, setIsSubmitted] = useState(false)
 
-  const handleSubmit = (e) => {
+  // Get auth store state and actions
+  const { forgotPassword, resetPassword, isLoading, error: authError } = useAuthStore()
+
+  // Set error from auth store
+  useEffect(() => {
+    if (authError) {
+      setError(authError)
+    }
+  }, [authError])
+
+  // Handle email submission
+  const handleEmailSubmit = async (e) => {
     e.preventDefault()
     setError('')
     setMessage('')
@@ -17,15 +33,70 @@ const ForgotPassword = ({ onLoginClick }) => {
       return
     }
 
-    // For demo purposes, we'll just show a success message
-    // In a real app, you would send a password reset email
-    setIsSubmitted(true)
-    setMessage('Password reset instructions have been sent to your email')
+    try {
+      const response = await forgotPassword(email)
+      setUserId(response.userId)
+      setMessage('OTP has been sent to your email')
+      setStep(2)
+    } catch (error) {
+      setError(error.message || 'Failed to send OTP. Please try again.')
+    }
+  }
+
+  // Handle OTP verification
+  const handleOTPSubmit = async (e) => {
+    e.preventDefault()
+    setError('')
+    setMessage('')
+
+    if (!otp) {
+      setError('Please enter the OTP sent to your email')
+      return
+    }
+
+    // Move to password reset step
+    setStep(3)
+  }
+
+  // Handle password reset
+  const handlePasswordReset = async (e) => {
+    e.preventDefault()
+    setError('')
+    setMessage('')
+
+    if (!newPassword || !confirmPassword) {
+      setError('Please fill in all fields')
+      return
+    }
+
+    if (newPassword.length < 8) {
+      setError('Password must be at least 8 characters long')
+      return
+    }
+
+    if (newPassword !== confirmPassword) {
+      setError('Passwords do not match')
+      return
+    }
+
+    try {
+      await resetPassword(userId, otp, newPassword)
+      setMessage('Password has been reset successfully')
+      setStep(4) // Success step
+    } catch (error) {
+      setError(error.message || 'Failed to reset password. Please try again.')
+    }
   }
 
   return (
     <div className="auth-form-container">
       <h2 className="text-3xl font-bold text-white mb-2 text-center">Reset Your Password</h2>
+      <p className="text-gray-400 mb-6 text-center">
+        {step === 1 && "Enter your email to receive a verification code"}
+        {step === 2 && "Enter the verification code sent to your email"}
+        {step === 3 && "Create a new password for your account"}
+        {step === 4 && "Your password has been reset successfully"}
+      </p>
 
       {error && (
         <div className="bg-red-900/50 border border-red-500 text-red-200 px-4 py-3 rounded-lg mb-4" role="alert">
@@ -39,44 +110,127 @@ const ForgotPassword = ({ onLoginClick }) => {
         </div>
       )}
 
-      {!isSubmitted ? (
-        <>
-          <p className="text-gray-400 mb-6 text-center">
-            Enter your email address and we'll send you instructions to reset your password.
-          </p>
+      {/* Step 1: Email Input */}
+      {step === 1 && (
+        <form onSubmit={handleEmailSubmit} className="space-y-5">
+          <div>
+            <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-1">Email</label>
+            <input
+              type="email"
+              id="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full px-3 py-2 bg-gray-700 border border-gray-600 text-white rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500"
+              required
+            />
+          </div>
 
-          <form onSubmit={handleSubmit} className="space-y-5">
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-1">Email</label>
-              <input
-                type="email"
-                id="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-3 py-2 bg-gray-700 border border-gray-600 text-white rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500"
-                required
-              />
-            </div>
+          <div>
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-lg text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-all duration-200 relative overflow-hidden group disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <span className="absolute inset-0 w-full h-full bg-gradient-to-br from-green-500/0 via-green-500/30 to-green-500/0 opacity-0 group-hover:opacity-100 group-hover:animate-shine"></span>
+              <span className="relative">{isLoading ? 'Sending...' : 'Send Verification Code'}</span>
+            </button>
+          </div>
+        </form>
+      )}
 
-            <div>
-              <button
-                type="submit"
-                className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-lg text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-all duration-200 relative overflow-hidden group"
-              >
-                <span className="absolute inset-0 w-full h-full bg-gradient-to-br from-green-500/0 via-green-500/30 to-green-500/0 opacity-0 group-hover:opacity-100 group-hover:animate-shine"></span>
-                <span className="relative">Send Reset Instructions</span>
-              </button>
-            </div>
-          </form>
-        </>
-      ) : (
+      {/* Step 2: OTP Input */}
+      {step === 2 && (
+        <form onSubmit={handleOTPSubmit} className="space-y-5">
+          <div>
+            <label htmlFor="otp" className="block text-sm font-medium text-gray-300 mb-1">Verification Code</label>
+            <input
+              type="text"
+              id="otp"
+              value={otp}
+              onChange={(e) => setOtp(e.target.value)}
+              className="w-full px-3 py-2 bg-gray-700 border border-gray-600 text-white rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500"
+              required
+            />
+          </div>
+
+          <div className="flex flex-col space-y-3">
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-lg text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidden group"
+            >
+              <span className="absolute inset-0 w-full h-full bg-gradient-to-br from-green-500/0 via-green-500/30 to-green-500/0 opacity-0 group-hover:opacity-100 group-hover:animate-shine"></span>
+              <span className="relative">{isLoading ? 'Verifying...' : 'Verify Code'}</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setStep(1)}
+              className="w-full flex justify-center py-3 px-4 border border-gray-700 rounded-md shadow-sm text-sm font-medium text-gray-300 bg-transparent hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-all duration-200"
+            >
+              Back to Email
+            </button>
+          </div>
+        </form>
+      )}
+
+      {/* Step 3: New Password */}
+      {step === 3 && (
+        <form onSubmit={handlePasswordReset} className="space-y-5">
+          <div>
+            <label htmlFor="newPassword" className="block text-sm font-medium text-gray-300 mb-1">New Password</label>
+            <input
+              type="password"
+              id="newPassword"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              className="w-full px-3 py-2 bg-gray-700 border border-gray-600 text-white rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500"
+              required
+            />
+          </div>
+
+          <div>
+            <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-300 mb-1">Confirm Password</label>
+            <input
+              type="password"
+              id="confirmPassword"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              className="w-full px-3 py-2 bg-gray-700 border border-gray-600 text-white rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500"
+              required
+            />
+          </div>
+
+          <div className="flex flex-col space-y-3">
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-lg text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidden group"
+            >
+              <span className="absolute inset-0 w-full h-full bg-gradient-to-br from-green-500/0 via-green-500/30 to-green-500/0 opacity-0 group-hover:opacity-100 group-hover:animate-shine"></span>
+              <span className="relative">{isLoading ? 'Resetting...' : 'Reset Password'}</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setStep(2)}
+              className="w-full flex justify-center py-3 px-4 border border-gray-700 rounded-md shadow-sm text-sm font-medium text-gray-300 bg-transparent hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-all duration-200"
+            >
+              Back to Verification
+            </button>
+          </div>
+        </form>
+      )}
+
+      {/* Step 4: Success */}
+      {step === 4 && (
         <div className="text-center bg-gray-700/50 p-6 rounded-lg border border-gray-600">
           <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 text-green-400 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
           </svg>
-          <h3 className="text-xl font-semibold text-white mb-2">Check Your Email</h3>
+          <h3 className="text-xl font-semibold text-white mb-2">Password Reset Successful</h3>
           <p className="text-gray-300 mb-4">
-            We've sent password reset instructions to your email. If you don't see it, check your spam folder.
+            Your password has been reset successfully. You can now log in with your new password.
           </p>
         </div>
       )}

@@ -1,5 +1,7 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import useAuthStore from '../../store/authStore'
+import OTPVerification from '../../components/auth/OTPVerification'
 
 const Register = ({ onLoginClick, onBackToMenuClick }) => {
   const [formData, setFormData] = useState({
@@ -9,7 +11,21 @@ const Register = ({ onLoginClick, onBackToMenuClick }) => {
     confirmPassword: ''
   })
   const [error, setError] = useState('')
+  const [isCheckingEmail, setIsCheckingEmail] = useState(false)
+  const [isEmailValid, setIsEmailValid] = useState(false)
+  const [showOTPVerification, setShowOTPVerification] = useState(false)
+  const [userId, setUserId] = useState(null)
   const navigate = useNavigate()
+
+  // Get auth store state and actions
+  const { register, checkEmail, isLoading, error: authError } = useAuthStore()
+
+  // Set error from auth store
+  useEffect(() => {
+    if (authError) {
+      setError(authError)
+    }
+  }, [authError])
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -17,9 +33,57 @@ const Register = ({ onLoginClick, onBackToMenuClick }) => {
       ...prev,
       [name]: value
     }))
+
+    // Clear error when user types
+    if (error) setError('')
+
+    // Check email availability when user types in email field
+    if (name === 'email' && value.includes('@')) {
+      handleEmailCheck(value)
+    }
   }
 
-  const handleSubmit = (e) => {
+  // Check if email is already registered
+  const handleEmailCheck = async (email) => {
+    try {
+      // Don't check if email is empty or invalid
+      if (!email || !email.includes('@') || !email.includes('.')) {
+        setIsEmailValid(false)
+        return
+      }
+
+      // Basic email validation with regex
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+      if (!emailRegex.test(email)) {
+        setIsEmailValid(false)
+        return
+      }
+
+      setIsCheckingEmail(true)
+      setIsEmailValid(false)
+      const response = await checkEmail(email)
+
+      if (response.exists) {
+        setError('Email is already registered. Please use a different email or sign in.')
+        setIsEmailValid(false)
+      } else {
+        // Email is valid and not registered
+        setIsEmailValid(true)
+        // Clear any previous email-related errors
+        if (error?.includes('Email is already registered')) {
+          setError('')
+        }
+      }
+    } catch (error) {
+      // Ignore errors during email check
+      console.error('Email check error:', error)
+      setIsEmailValid(false)
+    } finally {
+      setIsCheckingEmail(false)
+    }
+  }
+
+  const handleSubmit = async (e) => {
     e.preventDefault()
     setError('')
 
@@ -34,10 +98,36 @@ const Register = ({ onLoginClick, onBackToMenuClick }) => {
       return
     }
 
-    // For demo purposes, we'll just set isAuthenticated to true
-    // In a real app, you would register the user with your API
-    localStorage.setItem('isAuthenticated', 'true')
-    navigate('/dashboard', { replace: true })
+    if (formData.password.length < 8) {
+      setError('Password must be at least 8 characters long')
+      return
+    }
+
+    try {
+      // Register user
+      const response = await register({
+        name: formData.name,
+        email: formData.email,
+        password: formData.password
+      })
+
+      // Show OTP verification screen
+      setUserId(response.userId)
+      setShowOTPVerification(true)
+    } catch (error) {
+      setError(error.message || 'Registration failed. Please try again.')
+    }
+  }
+
+  // If showing OTP verification, render OTP component
+  if (showOTPVerification && userId) {
+    return (
+      <OTPVerification
+        userId={userId}
+        email={formData.email}
+        onBackToRegister={() => setShowOTPVerification(false)}
+      />
+    )
   }
 
   return (
@@ -67,15 +157,45 @@ const Register = ({ onLoginClick, onBackToMenuClick }) => {
 
         <div>
           <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-1">Email</label>
-          <input
-            type="email"
-            id="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            className="w-full px-3 py-2 bg-gray-700 border border-gray-600 text-white rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500"
-            required
-          />
+          <div className="relative">
+            <input
+              type="email"
+              id="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              className={`w-full px-3 py-2 bg-gray-700 border ${error?.includes('Email is already registered') ? 'border-red-500' : isEmailValid ? 'border-green-500' : 'border-gray-600'} text-white rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500 pr-10`}
+              required
+            />
+            {isCheckingEmail && (
+              <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                <svg className="animate-spin h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+              </div>
+            )}
+            {!isCheckingEmail && isEmailValid && (
+              <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                <svg className="h-5 w-5 text-green-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                </svg>
+              </div>
+            )}
+            {!isCheckingEmail && error?.includes('Email is already registered') && (
+              <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                <svg className="h-5 w-5 text-red-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                </svg>
+              </div>
+            )}
+          </div>
+          {error?.includes('Email is already registered') && (
+            <p className="mt-1 text-sm text-red-500">{error}</p>
+          )}
+          {isEmailValid && (
+            <p className="mt-1 text-sm text-green-500">Email is available</p>
+          )}
         </div>
 
         <div>
@@ -107,10 +227,11 @@ const Register = ({ onLoginClick, onBackToMenuClick }) => {
         <div>
           <button
             type="submit"
-            className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-lg text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-all duration-200 relative overflow-hidden group"
+            disabled={isLoading || isCheckingEmail || error?.includes('Email is already registered')}
+            className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-lg text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-all duration-200 relative overflow-hidden group disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <span className="absolute inset-0 w-full h-full bg-gradient-to-br from-green-500/0 via-green-500/30 to-green-500/0 opacity-0 group-hover:opacity-100 group-hover:animate-shine"></span>
-            <span className="relative">Create Account</span>
+            <span className="relative">{isLoading ? 'Creating Account...' : 'Create Account'}</span>
           </button>
         </div>
       </form>
