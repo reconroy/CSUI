@@ -140,7 +140,8 @@ const Profile = () => {
       }))
     } else if (name === 'skills') {
       // Handle skills array (comma-separated values)
-      const skillsArray = value.split(',').map(skill => skill.trim()).filter(Boolean)
+      // Split by comma, trim whitespace, and filter out empty strings
+      const skillsArray = value.split(',').map(skill => skill.trim()).filter(skill => skill !== '')
       setFormData(prev => ({
         ...prev,
         skills: skillsArray
@@ -152,6 +153,51 @@ const Profile = () => {
         [name]: value
       }))
     }
+  }
+
+  // Handle keydown events for skills input
+  const handleSkillsKeyDown = (e) => {
+    // If Enter or Tab is pressed, add the skill
+    if ((e.key === 'Enter' || e.key === 'Tab') && e.target.value.trim() !== '') {
+      e.preventDefault()
+
+      const currentValue = e.target.value.trim()
+      const lastCommaIndex = currentValue.lastIndexOf(',')
+
+      if (lastCommaIndex === -1) {
+        // No comma, add the whole value as a skill
+        setFormData(prev => ({
+          ...prev,
+          skills: [...prev.skills, currentValue]
+        }))
+
+        // Clear the input
+        e.target.value = ''
+      } else {
+        // There's a comma, add everything after the last comma
+        const newSkill = currentValue.substring(lastCommaIndex + 1).trim()
+        if (newSkill) {
+          const updatedSkills = [...formData.skills]
+          updatedSkills.push(newSkill)
+
+          setFormData(prev => ({
+            ...prev,
+            skills: updatedSkills
+          }))
+
+          // Keep everything before the last comma
+          e.target.value = currentValue.substring(0, lastCommaIndex + 1) + ' '
+        }
+      }
+    }
+  }
+
+  // Remove a skill when clicked
+  const handleRemoveSkill = (skillToRemove) => {
+    setFormData(prev => ({
+      ...prev,
+      skills: prev.skills.filter(skill => skill !== skillToRemove)
+    }))
   }
 
   // Handle profile picture upload
@@ -402,15 +448,38 @@ const Profile = () => {
 
           <div>
             <label htmlFor="skills" className="block text-sm font-medium text-gray-300 mb-1">Skills (comma separated)</label>
-            <input
-              type="text"
-              id="skills"
-              name="skills"
-              value={formData.skills.join(', ')}
-              onChange={handleChange}
-              className="w-full px-3 py-2 bg-gray-700 border border-gray-600 text-white rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500"
-              placeholder="e.g. JavaScript, React, Node.js"
-            />
+            <div className="relative">
+              <input
+                type="text"
+                id="skills"
+                name="skills"
+                value={formData.skills.join(', ')}
+                onChange={handleChange}
+                onKeyDown={handleSkillsKeyDown}
+                className="w-full px-3 py-2 bg-gray-700 border border-gray-600 text-white rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500"
+                placeholder="e.g. JavaScript, React, Node.js"
+              />
+              <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                <span className="text-xs text-gray-400">Press comma or Enter to add skills</span>
+              </div>
+            </div>
+            {formData.skills.length > 0 && (
+              <div className="mt-2 flex flex-wrap gap-2">
+                {formData.skills.map((skill, index) => (
+                  <span
+                    key={index}
+                    className="px-3 py-1 bg-gray-800 text-green-400 rounded-lg text-sm border border-gray-700 flex items-center group cursor-pointer hover:bg-gray-700 transition-colors duration-200"
+                    onClick={() => handleRemoveSkill(skill)}
+                    title="Click to remove"
+                  >
+                    {skill}
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1.5 text-gray-400 group-hover:text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                    </svg>
+                  </span>
+                ))}
+              </div>
+            )}
           </div>
 
           <div className="border-t border-gray-700 pt-4 mt-4">
