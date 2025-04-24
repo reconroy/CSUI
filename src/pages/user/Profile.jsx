@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react'
 import useAuthStore from '../../store/authStore'
-import { updateProfile, uploadProfilePicture } from '../../services/userService'
-import { FaCamera, FaUser } from 'react-icons/fa'
+import { updateProfile, uploadProfilePicture, uploadCoverPhoto, deleteProfilePicture, deleteCoverPhoto } from '../../services/userService'
+import { FaCamera, FaUser, FaImage } from 'react-icons/fa'
 
 // Helper function to compress image
-const compressImage = (imageDataUrl, maxWidth = 800, maxHeight = 800, quality = 0.7) => {
+const compressImage = (imageDataUrl, maxWidth = 1200, maxHeight = 1200, quality = 1) => {
   return new Promise((resolve) => {
     const img = new Image()
     img.src = imageDataUrl
@@ -68,7 +68,9 @@ const Profile = () => {
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
   const [profilePicture, setProfilePicture] = useState('')
+  const [coverPhoto, setCoverPhoto] = useState('')
   const fileInputRef = useRef(null)
+  const coverPhotoInputRef = useRef(null)
 
   // Load user profile data when component mounts
   useEffect(() => {
@@ -88,6 +90,7 @@ const Profile = () => {
   useEffect(() => {
     if (user) {
       setProfilePicture(user.profilePicture || '')
+      setCoverPhoto(user.coverPhoto || '')
       setProfile({
         name: user.name || '',
         email: user.email || '',
@@ -157,23 +160,14 @@ const Profile = () => {
 
   // Handle keydown events for skills input
   const handleSkillsKeyDown = (e) => {
-    // If Enter or Tab is pressed, add the skill
-    if ((e.key === 'Enter' || e.key === 'Tab') && e.target.value.trim() !== '') {
+    // If Enter or Tab is pressed after a comma, add the skill
+    if (e.key === 'Enter' || e.key === 'Tab') {
       e.preventDefault()
 
       const currentValue = e.target.value.trim()
       const lastCommaIndex = currentValue.lastIndexOf(',')
 
-      if (lastCommaIndex === -1) {
-        // No comma, add the whole value as a skill
-        setFormData(prev => ({
-          ...prev,
-          skills: [...prev.skills, currentValue]
-        }))
-
-        // Clear the input
-        e.target.value = ''
-      } else {
+      if (lastCommaIndex !== -1) {
         // There's a comma, add everything after the last comma
         const newSkill = currentValue.substring(lastCommaIndex + 1).trim()
         if (newSkill) {
@@ -190,6 +184,31 @@ const Profile = () => {
         }
       }
     }
+
+    // Handle comma key press in skills input
+    if (e.key === ',') {
+      const currentValue = e.target.value.trim()
+      // If there's content before this comma, add it as a skill
+      if (currentValue && currentValue !== ',') {
+        const lastCommaIndex = currentValue.lastIndexOf(',')
+        let skillToAdd = ''
+
+        if (lastCommaIndex === -1) {
+          // No previous comma, add everything
+          skillToAdd = currentValue
+        } else {
+          // Add everything after the last comma
+          skillToAdd = currentValue.substring(lastCommaIndex + 1).trim()
+        }
+
+        if (skillToAdd) {
+          setFormData(prev => ({
+            ...prev,
+            skills: [...prev.skills, skillToAdd]
+          }))
+        }
+      }
+    }
   }
 
   // Remove a skill when clicked
@@ -203,6 +222,92 @@ const Profile = () => {
   // Handle profile picture upload
   const handleProfilePictureClick = () => {
     fileInputRef.current.click()
+  }
+
+  // Handle profile picture removal
+  const handleRemoveProfilePicture = async (e) => {
+    e.stopPropagation() // Prevent triggering the parent click handler
+    try {
+      // Call API to remove profile picture
+      const response = await deleteProfilePicture()
+      console.log('Profile picture removal response:', response)
+      setProfilePicture('')
+      setSuccess('Profile picture removed successfully')
+
+      // Refresh profile data
+      await getProfile()
+    } catch (error) {
+      console.error('Failed to remove profile picture:', error)
+      setError(error.message || 'Failed to remove profile picture')
+    }
+  }
+
+  // Handle cover photo upload
+  const handleCoverPhotoClick = () => {
+    coverPhotoInputRef.current.click()
+  }
+
+  // Handle cover photo removal
+  const handleRemoveCoverPhoto = async (e) => {
+    e.stopPropagation() // Prevent triggering the parent click handler
+    try {
+      // Call API to remove cover photo
+      const response = await deleteCoverPhoto()
+      console.log('Cover photo removal response:', response)
+      setCoverPhoto('')
+      setSuccess('Cover photo removed successfully')
+
+      // Refresh profile data
+      await getProfile()
+    } catch (error) {
+      console.error('Failed to remove cover photo:', error)
+      setError(error.message || 'Failed to remove cover photo')
+    }
+  }
+
+  const handleCoverPhotoChange = async (e) => {
+    const file = e.target.files[0]
+    if (!file) return
+
+    // Check file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      setError('Image is too large. Please select an image under 5MB.')
+      return
+    }
+
+    // Check file type
+    if (!file.type.match('image.*')) {
+      setError('Please select an image file.')
+      return
+    }
+
+    // In a real implementation, you would upload the file to a server
+    // For now, we'll use a FileReader to get a data URL
+    const reader = new FileReader()
+    reader.onload = async (event) => {
+      try {
+        // Get original image data URL
+        const originalImageUrl = event.target.result
+
+        // Compress the image
+        const compressedImageUrl = await compressImage(originalImageUrl, 1920, 600, 0.95)
+
+        // Update UI with compressed image
+        setCoverPhoto(compressedImageUrl)
+
+        // Call API to update cover photo with compressed image
+        const response = await uploadCoverPhoto(compressedImageUrl)
+        console.log('Cover photo update response:', response)
+        setSuccess('Cover photo updated successfully')
+
+        // Refresh profile data
+        await getProfile()
+      } catch (error) {
+        console.error('Failed to upload cover photo:', error)
+        setError(error.message || 'Failed to upload cover photo')
+      }
+    }
+    reader.readAsDataURL(file)
   }
 
   const handleProfilePictureChange = async (e) => {
@@ -230,7 +335,7 @@ const Profile = () => {
         const originalImageUrl = event.target.result
 
         // Compress the image
-        const compressedImageUrl = await compressImage(originalImageUrl, 800, 800, 0.7)
+        const compressedImageUrl = await compressImage(originalImageUrl, 1200, 1200, 0.95)
 
         // Update UI with compressed image
         setProfilePicture(compressedImageUrl)
@@ -275,10 +380,49 @@ const Profile = () => {
 
   return (
     <div className="bg-gray-800/80 backdrop-blur-sm p-8 rounded-xl border border-gray-700/50 shadow-xl">
-      {/* Header with Profile Picture */}
+      {/* Header with Cover Photo and Profile Picture */}
       <div className="relative mb-16">
-        {/* Cover Photo Area - Gradient Background */}
-        <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-r from-gray-900 via-green-900/30 to-gray-900 rounded-t-xl"></div>
+        {/* Cover Photo Area */}
+        <div
+          className="relative h-60 rounded-t-xl overflow-hidden cursor-pointer group"
+          onClick={handleCoverPhotoClick}
+        >
+          {coverPhoto ? (
+            <img
+              src={coverPhoto}
+              alt="Cover"
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            <div className="w-full h-full bg-gradient-to-r from-gray-900 via-green-900/30 to-gray-900"></div>
+          )}
+          <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300">
+            <div className="flex space-x-3">
+              <div className="bg-gray-800 bg-opacity-70 px-4 py-2 rounded-lg flex items-center cursor-pointer hover:bg-gray-700">
+                <FaImage className="text-white mr-2" />
+                <span className="text-white text-sm">Change Cover Photo</span>
+              </div>
+              {coverPhoto && (
+                <div
+                  className="bg-red-900 bg-opacity-70 px-4 py-2 rounded-lg flex items-center cursor-pointer hover:bg-red-800"
+                  onClick={handleRemoveCoverPhoto}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-white" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
+                  </svg>
+                  <span className="text-white text-sm">Remove</span>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+        <input
+          type="file"
+          ref={coverPhotoInputRef}
+          className="hidden"
+          accept="image/*"
+          onChange={handleCoverPhotoChange}
+        />
 
         {/* Profile Picture */}
         <div className="relative z-10 flex flex-col items-center">
@@ -297,8 +441,20 @@ const Profile = () => {
                 <FaUser className="text-gray-400 text-4xl" />
               </div>
             )}
-            <div className="absolute inset-0 bg-black bg-opacity-60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 ease-in-out">
-              <FaCamera className="text-white text-2xl" />
+            <div className="absolute inset-0 bg-black bg-opacity-60 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 ease-in-out">
+              <FaCamera className="text-white text-2xl mb-2" />
+              {profilePicture && (
+                <button
+                  type="button"
+                  className="bg-red-900 bg-opacity-70 px-2 py-1 rounded text-xs text-white flex items-center hover:bg-red-800"
+                  onClick={handleRemoveProfilePicture}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
+                  </svg>
+                  Remove
+                </button>
+              )}
             </div>
           </div>
           <input

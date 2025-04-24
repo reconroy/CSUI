@@ -21,10 +21,28 @@ export const updateProfile = async (profileData) => {
  */
 export const uploadProfilePicture = async (imageUrl) => {
   try {
+    // If imageUrl is empty, use the delete endpoint
+    if (!imageUrl) {
+      const response = await api.del('/users/profile-picture', true);
+      return response;
+    }
     const response = await api.post('/users/profile-picture', { imageUrl }, true);
     return response;
   } catch (error) {
     throw new Error(error.message || 'Failed to upload profile picture');
+  }
+};
+
+/**
+ * Delete profile picture
+ * @returns {Promise} - Response data
+ */
+export const deleteProfilePicture = async () => {
+  try {
+    const response = await api.del('/users/profile-picture', true);
+    return response;
+  } catch (error) {
+    throw new Error(error.message || 'Failed to delete profile picture');
   }
 };
 
@@ -35,10 +53,28 @@ export const uploadProfilePicture = async (imageUrl) => {
  */
 export const uploadCoverPhoto = async (imageUrl) => {
   try {
+    // If imageUrl is empty, use the delete endpoint
+    if (!imageUrl) {
+      const response = await api.del('/users/cover-photo', true);
+      return response;
+    }
     const response = await api.post('/users/cover-photo', { imageUrl }, true);
     return response;
   } catch (error) {
     throw new Error(error.message || 'Failed to upload cover photo');
+  }
+};
+
+/**
+ * Delete cover photo
+ * @returns {Promise} - Response data
+ */
+export const deleteCoverPhoto = async () => {
+  try {
+    const response = await api.del('/users/cover-photo', true);
+    return response;
+  } catch (error) {
+    throw new Error(error.message || 'Failed to delete cover photo');
   }
 };
 
