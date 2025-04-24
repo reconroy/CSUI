@@ -11,9 +11,9 @@ const useAuthStore = create((set, get) => ({
   isLoading: false,
   error: null,
   registrationData: null,
-  
+
   // Actions
-  
+
   /**
    * Check if email exists
    * @param {string} email - User email
@@ -29,7 +29,7 @@ const useAuthStore = create((set, get) => ({
       throw error;
     }
   },
-  
+
   /**
    * Register a new user
    * @param {object} userData - User data (name, email, password)
@@ -38,7 +38,7 @@ const useAuthStore = create((set, get) => ({
     try {
       set({ isLoading: true, error: null });
       const response = await authService.register(userData);
-      set({ 
+      set({
         isLoading: false,
         registrationData: {
           userId: response.userId,
@@ -51,7 +51,7 @@ const useAuthStore = create((set, get) => ({
       throw error;
     }
   },
-  
+
   /**
    * Verify OTP
    * @param {string} userId - User ID
@@ -61,7 +61,7 @@ const useAuthStore = create((set, get) => ({
     try {
       set({ isLoading: true, error: null });
       const response = await authService.verifyOTP(userId, otp);
-      
+
       // Update auth state
       set({
         isLoading: false,
@@ -69,22 +69,23 @@ const useAuthStore = create((set, get) => ({
         user: response.user,
         registrationData: null
       });
-      
+
       return response;
     } catch (error) {
       set({ isLoading: false, error: error.message });
       throw error;
     }
   },
-  
+
   /**
    * Resend OTP
    * @param {string} userId - User ID
+   * @param {string} purpose - OTP purpose ('verification' or 'password-reset')
    */
-  resendOTP: async (userId) => {
+  resendOTP: async (userId, purpose = 'verification') => {
     try {
       set({ isLoading: true, error: null });
-      const response = await authService.resendOTP(userId);
+      const response = await authService.resendOTP(userId, purpose);
       set({ isLoading: false });
       return response;
     } catch (error) {
@@ -92,7 +93,7 @@ const useAuthStore = create((set, get) => ({
       throw error;
     }
   },
-  
+
   /**
    * Login user
    * @param {string} email - User email
@@ -103,21 +104,21 @@ const useAuthStore = create((set, get) => ({
     try {
       set({ isLoading: true, error: null });
       const response = await authService.login(email, password, rememberMe);
-      
+
       // Update auth state
       set({
         isLoading: false,
         isAuthenticated: true,
         user: response.user
       });
-      
+
       return response;
     } catch (error) {
       set({ isLoading: false, error: error.message });
       throw error;
     }
   },
-  
+
   /**
    * Logout user
    */
@@ -128,7 +129,7 @@ const useAuthStore = create((set, get) => ({
       user: null
     });
   },
-  
+
   /**
    * Get user profile
    */
@@ -136,20 +137,20 @@ const useAuthStore = create((set, get) => ({
     try {
       set({ isLoading: true, error: null });
       const response = await authService.getProfile();
-      
+
       // Update user data
       set({
         isLoading: false,
         user: response.user
       });
-      
+
       return response;
     } catch (error) {
       set({ isLoading: false, error: error.message });
       throw error;
     }
   },
-  
+
   /**
    * Forgot password
    * @param {string} email - User email
@@ -165,7 +166,24 @@ const useAuthStore = create((set, get) => ({
       throw error;
     }
   },
-  
+
+  /**
+   * Verify password reset OTP
+   * @param {string} userId - User ID
+   * @param {string} otp - One-time password
+   */
+  verifyResetOTP: async (userId, otp) => {
+    try {
+      set({ isLoading: true, error: null });
+      const response = await authService.verifyResetOTP(userId, otp);
+      set({ isLoading: false });
+      return response;
+    } catch (error) {
+      set({ isLoading: false, error: error.message });
+      throw error;
+    }
+  },
+
   /**
    * Reset password
    * @param {string} userId - User ID
@@ -183,7 +201,7 @@ const useAuthStore = create((set, get) => ({
       throw error;
     }
   },
-  
+
   /**
    * Change password
    * @param {string} currentPassword - Current password
@@ -200,7 +218,7 @@ const useAuthStore = create((set, get) => ({
       throw error;
     }
   },
-  
+
   /**
    * Clear error
    */
