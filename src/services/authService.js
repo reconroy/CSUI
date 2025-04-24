@@ -44,10 +44,11 @@ export const verifyOTP = async (userId, otp) => {
 /**
  * Resend OTP
  * @param {string} userId - User ID
+ * @param {string} purpose - OTP purpose ('verification' or 'password-reset')
  * @returns {Promise} - Response data
  */
-export const resendOTP = async (userId) => {
-  return await api.post('/auth/resend-otp', { userId });
+export const resendOTP = async (userId, purpose = 'verification') => {
+  return await api.post('/auth/resend-otp', { userId, purpose });
 };
 
 /**
@@ -111,6 +112,16 @@ export const getProfile = async () => {
  */
 export const forgotPassword = async (email) => {
   return await api.post('/auth/forgot-password', { email });
+};
+
+/**
+ * Verify password reset OTP
+ * @param {string} userId - User ID
+ * @param {string} otp - One-time password
+ * @returns {Promise} - Response data
+ */
+export const verifyResetOTP = async (userId, otp) => {
+  return await api.post('/auth/verify-reset-otp', { userId, otp });
 };
 
 /**
