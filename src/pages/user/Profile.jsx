@@ -3,6 +3,43 @@ import useAuthStore from '../../store/authStore'
 import { updateProfile, uploadProfilePicture } from '../../services/userService'
 import { FaCamera, FaUser } from 'react-icons/fa'
 
+// Helper function to compress image
+const compressImage = (imageDataUrl, maxWidth = 800, maxHeight = 800, quality = 0.7) => {
+  return new Promise((resolve) => {
+    const img = new Image()
+    img.src = imageDataUrl
+    img.onload = () => {
+      // Create canvas
+      const canvas = document.createElement('canvas')
+      let width = img.width
+      let height = img.height
+
+      // Calculate new dimensions
+      if (width > height) {
+        if (width > maxWidth) {
+          height = Math.round((height * maxWidth) / width)
+          width = maxWidth
+        }
+      } else {
+        if (height > maxHeight) {
+          width = Math.round((width * maxHeight) / height)
+          height = maxHeight
+        }
+      }
+
+      // Resize image
+      canvas.width = width
+      canvas.height = height
+      const ctx = canvas.getContext('2d')
+      ctx.drawImage(img, 0, 0, width, height)
+
+      // Get compressed data URL
+      const compressedDataUrl = canvas.toDataURL('image/jpeg', quality)
+      resolve(compressedDataUrl)
+    }
+  })
+}
+
 const Profile = () => {
   // Get user data from auth store
   const { user, getProfile, isLoading } = useAuthStore()
@@ -126,16 +163,35 @@ const Profile = () => {
     const file = e.target.files[0]
     if (!file) return
 
+    // Check file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      setError('Image is too large. Please select an image under 5MB.')
+      return
+    }
+
+    // Check file type
+    if (!file.type.match('image.*')) {
+      setError('Please select an image file.')
+      return
+    }
+
     // In a real implementation, you would upload the file to a server
     // For now, we'll use a FileReader to get a data URL
     const reader = new FileReader()
     reader.onload = async (event) => {
       try {
-        const imageUrl = event.target.result
-        setProfilePicture(imageUrl)
+        // Get original image data URL
+        const originalImageUrl = event.target.result
 
-        // Call API to update profile picture
-        await uploadProfilePicture(imageUrl)
+        // Compress the image
+        const compressedImageUrl = await compressImage(originalImageUrl, 800, 800, 0.7)
+
+        // Update UI with compressed image
+        setProfilePicture(compressedImageUrl)
+
+        // Call API to update profile picture with compressed image
+        const response = await uploadProfilePicture(compressedImageUrl)
+        console.log('Profile picture update response:', response)
         setSuccess('Profile picture updated successfully')
 
         // Refresh profile data
