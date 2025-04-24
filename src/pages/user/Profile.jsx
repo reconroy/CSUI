@@ -64,7 +64,7 @@ const Profile = () => {
   })
 
   const [isEditing, setIsEditing] = useState(false)
-  const [formData, setFormData] = useState(profile)
+  const [formData, setFormData] = useState({...profile, _skillsInputValue: ''})
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
   const [profilePicture, setProfilePicture] = useState('')
@@ -123,7 +123,8 @@ const Profile = () => {
           instagram: user.socialLinks?.instagram || '',
           youtube: user.socialLinks?.youtube || ''
         },
-        skills: user.skills || []
+        skills: user.skills || [],
+        _skillsInputValue: ''
       })
     }
   }, [user])
@@ -142,13 +143,17 @@ const Profile = () => {
         }
       }))
     } else if (name === 'skills') {
-      // Handle skills array (comma-separated values)
-      // Split by comma, trim whitespace, and filter out empty strings
-      const skillsArray = value.split(',').map(skill => skill.trim()).filter(skill => skill !== '')
-      setFormData(prev => ({
-        ...prev,
-        skills: skillsArray
-      }))
+      // For skills, we'll let the keyDown handler manage the skills array
+      // This prevents duplicate processing when comma is pressed
+      // We only update the input value here, not the skills array
+      if (!value.includes(',')) {
+        // Only update if there's no comma (to avoid duplicate processing)
+        setFormData(prev => ({
+          ...prev,
+          // Keep the existing skills array
+          _skillsInputValue: value // Store the current input value separately
+        }))
+      }
     } else {
       // Handle regular fields
       setFormData(prev => ({
@@ -160,52 +165,42 @@ const Profile = () => {
 
   // Handle keydown events for skills input
   const handleSkillsKeyDown = (e) => {
-    // If Enter or Tab is pressed after a comma, add the skill
-    if (e.key === 'Enter' || e.key === 'Tab') {
+    // If Enter is pressed, add the current input as a skill
+    if (e.key === 'Enter') {
       e.preventDefault()
 
       const currentValue = e.target.value.trim()
-      const lastCommaIndex = currentValue.lastIndexOf(',')
-
-      if (lastCommaIndex !== -1) {
-        // There's a comma, add everything after the last comma
-        const newSkill = currentValue.substring(lastCommaIndex + 1).trim()
-        if (newSkill) {
-          const updatedSkills = [...formData.skills]
-          updatedSkills.push(newSkill)
-
+      if (currentValue) {
+        // Add the current value as a skill if it's not empty
+        if (!formData.skills.includes(currentValue)) {
           setFormData(prev => ({
             ...prev,
-            skills: updatedSkills
+            skills: [...prev.skills, currentValue],
+            _skillsInputValue: '' // Clear the input
           }))
 
-          // Keep everything before the last comma
-          e.target.value = currentValue.substring(0, lastCommaIndex + 1) + ' '
+          // Clear the input field
+          e.target.value = ''
         }
       }
     }
 
     // Handle comma key press in skills input
     if (e.key === ',') {
+      e.preventDefault() // Prevent the comma from being added to the input
+
       const currentValue = e.target.value.trim()
-      // If there's content before this comma, add it as a skill
-      if (currentValue && currentValue !== ',') {
-        const lastCommaIndex = currentValue.lastIndexOf(',')
-        let skillToAdd = ''
-
-        if (lastCommaIndex === -1) {
-          // No previous comma, add everything
-          skillToAdd = currentValue
-        } else {
-          // Add everything after the last comma
-          skillToAdd = currentValue.substring(lastCommaIndex + 1).trim()
-        }
-
-        if (skillToAdd) {
+      if (currentValue) {
+        // Add the current value as a skill if it's not empty and not already in the list
+        if (!formData.skills.includes(currentValue)) {
           setFormData(prev => ({
             ...prev,
-            skills: [...prev.skills, skillToAdd]
+            skills: [...prev.skills, currentValue],
+            _skillsInputValue: '' // Clear the input
           }))
+
+          // Clear the input field
+          e.target.value = ''
         }
       }
     }
@@ -609,7 +604,7 @@ const Profile = () => {
                 type="text"
                 id="skills"
                 name="skills"
-                value={formData.skills.join(', ')}
+                value={formData._skillsInputValue || ''}
                 onChange={handleChange}
                 onKeyDown={handleSkillsKeyDown}
                 className="w-full px-3 py-2 bg-gray-700 border border-gray-600 text-white rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500"
@@ -699,7 +694,7 @@ const Profile = () => {
             <button
               type="button"
               onClick={() => {
-                setFormData(profile)
+                setFormData({...profile, _skillsInputValue: ''})
                 setIsEditing(false)
               }}
               className="px-4 py-2 border border-gray-600 rounded-md text-gray-300 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-all duration-200"
