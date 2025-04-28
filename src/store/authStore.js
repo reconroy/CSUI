@@ -220,6 +220,12 @@ const useAuthStore = create((set, get) => ({
   },
 
   /**
+   * Set auth state directly (used for social login)
+   * @param {object} authState - Auth state object
+   */
+  setAuthState: (authState) => set(authState),
+
+  /**
    * Clear error
    */
   clearError: () => set({ error: null })

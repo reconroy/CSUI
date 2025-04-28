@@ -9,26 +9,27 @@ import Profile from '../pages/user/Profile';
 import Settings from '../pages/user/Settings';
 import ChangePassword from '../pages/user/ChangePassword';
 import CodeEditor from '../pages/codespace/CodeEditor';
+import SocialAuthCallback from '../components/auth/SocialAuthCallback';
 
 // Auth guard for protected routes
 const ProtectedRoute = ({ children }) => {
   const isAuthenticated = localStorage.getItem('isAuthenticated') === 'true';
-  
+
   if (!isAuthenticated) {
     return <Navigate to="/" replace />;
   }
-  
+
   return children;
 };
 
 // Guest guard for auth routes (redirect to dashboard if already logged in)
 const GuestRoute = ({ children }) => {
   const isAuthenticated = localStorage.getItem('isAuthenticated') === 'true';
-  
+
   if (isAuthenticated) {
     return <Navigate to="/dashboard" replace />;
   }
-  
+
   return children;
 };
 
@@ -54,9 +55,13 @@ const router = createBrowserRouter([
         path: 'forgot-password',
         element: <ForgotPassword />,
       },
+      {
+        path: 'auth/social-callback',
+        element: <SocialAuthCallback />,
+      },
     ],
   },
-  
+
   // Protected routes (InnerLayout)
   {
     path: '/',
@@ -80,7 +85,7 @@ const router = createBrowserRouter([
       },
     ],
   },
-  
+
   // Fallback route
   {
     path: '*',

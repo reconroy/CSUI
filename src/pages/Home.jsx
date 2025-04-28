@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import Login from './auth/Login'
 import Register from './auth/Register'
 import ForgotPassword from './auth/ForgotPassword'
@@ -6,9 +7,42 @@ import Menu from './auth/Menu'
 import '../styles/formTransitions.css'
 
 const Home = () => {
+  const [searchParams] = useSearchParams();
   const [activeForm, setActiveForm] = useState('menu')
   const [isAnimating, setIsAnimating] = useState(false)
   const [currentForm, setCurrentForm] = useState('menu')
+  const [errorMessage, setErrorMessage] = useState('')
+
+  // Check for error parameters in URL
+  useEffect(() => {
+    const error = searchParams.get('error');
+    const message = searchParams.get('message');
+
+    if (error) {
+      // If there's an error, show the login form
+      setActiveForm('login');
+
+      // Set error message
+      if (message) {
+        setErrorMessage(decodeURIComponent(message));
+      } else {
+        // Default error messages based on error code
+        switch (error) {
+          case 'google_auth_failed':
+            setErrorMessage('Google authentication failed. Please try again or use email/password.');
+            break;
+          case 'email_already_linked':
+            setErrorMessage('This email is already linked to a different Google account.');
+            break;
+          case 'auth_record_not_found':
+            setErrorMessage('Authentication record not found. Please try again or contact support.');
+            break;
+          default:
+            setErrorMessage('Authentication failed. Please try again.');
+        }
+      }
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     if (activeForm !== currentForm) {
@@ -30,11 +64,13 @@ const Home = () => {
           onRegisterClick={() => setActiveForm('register')}
           onForgotClick={() => setActiveForm('forgot')}
           onBackToMenuClick={() => setActiveForm('menu')}
+          initialError={errorMessage}
         />
       case 'register':
         return <Register
           onLoginClick={() => setActiveForm('login')}
           onBackToMenuClick={() => setActiveForm('menu')}
+          initialError={errorMessage}
         />
       case 'forgot':
         return <ForgotPassword onLoginClick={() => setActiveForm('login')} />

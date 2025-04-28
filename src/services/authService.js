@@ -144,3 +144,21 @@ export const resetPassword = async (userId, otp, newPassword) => {
 export const changePassword = async (currentPassword, newPassword) => {
   return await api.put('/auth/change-password', { currentPassword, newPassword }, true);
 };
+
+/**
+ * Get Google OAuth URL
+ * @returns {string} - Google OAuth URL
+ */
+export const getGoogleAuthUrl = () => {
+  const apiUrl = api.getApiUrl();
+  return `${apiUrl}/auth/google`;
+};
+
+/**
+ * Initiate Google OAuth login
+ * Opens a new window for Google authentication
+ */
+export const initiateGoogleAuth = () => {
+  const googleAuthUrl = getGoogleAuthUrl();
+  window.location.href = googleAuthUrl;
+};

@@ -6,6 +6,12 @@
 const API_URL = 'http://localhost:3000/api';
 
 /**
+ * Get the API URL
+ * @returns {string} - API URL
+ */
+export const getApiUrl = () => API_URL;
+
+/**
  * Make a GET request
  * @param {string} endpoint - API endpoint
  * @param {boolean} requiresAuth - Whether the request requires authentication
