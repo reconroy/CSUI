@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams, Navigate } from 'react-router-dom';
 import useAuthStore from '../../store/authStore';
 import * as api from '../../services/api';
 
@@ -14,6 +14,32 @@ const SocialAuthCallback = () => {
 
   const [successMessage, setSuccessMessage] = useState('');
   const [showSuccess, setShowSuccess] = useState(false);
+
+  // Check if user is already authenticated - redirect to dashboard if they are
+  // This prevents accessing this page after login by using the back button
+  if (localStorage.getItem('isAuthenticated') === 'true' && !searchParams.get('token')) {
+    return <Navigate to="/dashboard" replace />;
+  }
+
+  // Function to clear browser history and prevent back navigation
+  const clearHistoryAndNavigate = (path) => {
+    // Replace the current history entry with the dashboard
+    navigate(path, { replace: true });
+
+    // Push a new entry to history that redirects back to dashboard if user tries to go back
+    window.history.pushState(null, '', path);
+
+    // Create a named function for the event listener so we can remove it later if needed
+    const preventBack = () => {
+      window.history.pushState(null, '', path);
+    };
+
+    // Add event listener to handle any attempts to navigate back
+    window.addEventListener('popstate', preventBack);
+
+    // Store the function in window so we can access it for cleanup
+    window._preventBackNavigation = preventBack;
+  };
 
   useEffect(() => {
     const handleSocialCallback = async () => {
@@ -70,11 +96,11 @@ const SocialAuthCallback = () => {
 
           // Redirect to dashboard after a delay
           setTimeout(() => {
-            navigate('/dashboard', { replace: true });
+            clearHistoryAndNavigate('/dashboard');
           }, 3000);
         } else {
           // Redirect to dashboard immediately
-          navigate('/dashboard', { replace: true });
+          clearHistoryAndNavigate('/dashboard');
         }
       } catch (error) {
         console.error('Social callback error:', error);
@@ -84,6 +110,14 @@ const SocialAuthCallback = () => {
     };
 
     handleSocialCallback();
+
+    // Cleanup function to remove event listener when component unmounts
+    return () => {
+      if (window._preventBackNavigation) {
+        window.removeEventListener('popstate', window._preventBackNavigation);
+        delete window._preventBackNavigation;
+      }
+    };
   }, [searchParams, navigate, setAuthState]);
 
   if (loading) {
