@@ -88,8 +88,22 @@ const OTPVerification = ({ userId, email, onBackToRegister }) => {
 
       // Short delay for better UX
       setTimeout(() => {
-        // Redirect to dashboard on success
+        // Redirect to dashboard on success and prevent back navigation
         navigate('/dashboard', { replace: true });
+
+        // Push current state to history to prevent going back to login
+        window.history.pushState(null, '', '/dashboard');
+
+        // Add event listener for popstate (back/forward button)
+        const preventBackNavigation = () => {
+          window.history.pushState(null, '', '/dashboard');
+        };
+
+        // Add event listener to handle any attempts to navigate back
+        window.addEventListener('popstate', preventBackNavigation);
+
+        // Store the function in window so we can access it for cleanup if needed
+        window._preventBackNavigation = preventBackNavigation;
       }, 1000);
     } catch (error) {
       setError(error.message || 'Failed to verify OTP. Please try again.');

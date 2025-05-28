@@ -1,6 +1,26 @@
-import React from 'react'
+import React, { useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 const CodeEditor = () => {
+  const navigate = useNavigate();
+
+  // Prevent back navigation to login/auth pages
+  useEffect(() => {
+    // Push current state to history to prevent going back to login
+    window.history.pushState(null, '', window.location.pathname);
+
+    // Add event listener for popstate (back/forward button)
+    const preventBackNavigation = () => {
+      window.history.pushState(null, '', window.location.pathname);
+    };
+
+    window.addEventListener('popstate', preventBackNavigation);
+
+    // Cleanup function
+    return () => {
+      window.removeEventListener('popstate', preventBackNavigation);
+    };
+  }, []);
   return (
     <div className="h-full">
       <div className="bg-gray-800/70 backdrop-blur-sm p-6 rounded-lg border border-gray-700/50 shadow-lg mb-6">

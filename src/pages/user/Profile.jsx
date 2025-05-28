@@ -645,7 +645,7 @@ const Profile = () => {
                   value={formData.socialLinks.github}
                   onChange={handleChange}
                   className="w-full px-3 py-2 bg-gray-700 border border-gray-600 text-white rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500"
-                  placeholder="username"
+                  placeholder="username or full profile URL"
                 />
               </div>
 
@@ -832,12 +832,14 @@ const Profile = () => {
                   <h4 className="text-xs font-medium text-gray-400">GitHub</h4>
                   {profile.socialLinks?.github ? (
                     <a
-                      href={`https://github.com/${profile.socialLinks.github}`}
+                      href={profile.socialLinks.github.startsWith('http') ? profile.socialLinks.github : `https://github.com/${profile.socialLinks.github}`}
                       className="text-green-400 hover:text-green-300 hover:underline text-xs"
                       target="_blank"
                       rel="noopener noreferrer"
                     >
-                      @{profile.socialLinks.github}
+                      {profile.socialLinks.github.startsWith('http')
+                        ? profile.socialLinks.github.replace(/https?:\/\/(www\.)?github\.com\//, '@')
+                        : `@${profile.socialLinks.github}`}
                     </a>
                   ) : (
                     <span className="text-gray-500 italic text-xs">Not specified</span>

@@ -162,3 +162,21 @@ export const initiateGoogleAuth = () => {
   const googleAuthUrl = getGoogleAuthUrl();
   window.location.href = googleAuthUrl;
 };
+
+/**
+ * Get GitHub OAuth URL
+ * @returns {string} - GitHub OAuth URL
+ */
+export const getGitHubAuthUrl = () => {
+  const apiUrl = api.getApiUrl();
+  return `${apiUrl}/auth/github`;
+};
+
+/**
+ * Initiate GitHub OAuth login
+ * Opens a new window for GitHub authentication
+ */
+export const initiateGitHubAuth = () => {
+  const gitHubAuthUrl = getGitHubAuthUrl();
+  window.location.href = gitHubAuthUrl;
+};
