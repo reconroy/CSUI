@@ -2,8 +2,17 @@
  * API service for making HTTP requests to the backend
  */
 
-// API base URL
-const API_URL = 'http://localhost:3000/api';
+// API base URL - automatically detects if running on LAN
+const getBaseUrl = () => {
+  // If running on localhost, use localhost
+  if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+    return 'http://localhost:3000/api';
+  }
+  // If running on LAN, use the same host but port 3000
+  return `http://${window.location.hostname}:3000/api`;
+};
+
+const API_URL = getBaseUrl();
 
 /**
  * Get the API URL
