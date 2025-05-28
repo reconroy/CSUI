@@ -1,5 +1,6 @@
 import { Outlet, Link, useNavigate } from 'react-router-dom'
 import PrimaryPanel from '../components/PrimaryPanel';
+import SecondaryPanel from '../components/SecondaryPanel';
 
 const InnerLayout = () => {
   const navigate = useNavigate();
@@ -19,6 +20,9 @@ const InnerLayout = () => {
       <main className="flex-grow p-8 bg-gray-900/80 backdrop-blur-sm text-white relative z-10">
         <Outlet />
       </main>
+
+      {/* Secondary panel */}
+      <SecondaryPanel />
     </div>
   )
 }
