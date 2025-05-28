@@ -1,4 +1,3 @@
-import React from 'react'
 import { Outlet, Link, useNavigate } from 'react-router-dom'
 import PrimaryPanel from '../components/PrimaryPanel';
 
@@ -13,8 +12,6 @@ const InnerLayout = () => {
   return (
     <div className="min-h-screen bg-gray-900 flex relative overflow-hidden">
       {/* Background effects */}
-  
-
       {/* Sidebar */}
       <PrimaryPanel handleLogout={handleLogout} />
 
