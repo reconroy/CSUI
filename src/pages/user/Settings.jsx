@@ -1,10 +1,12 @@
 import React, { useState } from 'react'
 import useUISettingsStore from '../../stores/uiSettingsStore'
 import useEditorSettingsStore from '../../stores/editorSettingsStore'
+import LiveEditorPreview from '../../components/LiveEditorPreview'
 
 const Settings = () => {
   const [activeTab, setActiveTab] = useState('ui')
   const [message, setMessage] = useState('')
+  const [showLivePreview, setShowLivePreview] = useState(true)
 
   // UI Settings from store
   const {
@@ -338,10 +340,35 @@ const Settings = () => {
                 <div className="space-y-8">
                   <div>
                     <h2 className="text-2xl font-bold text-white mb-4">Code Editor Settings</h2>
-                    <p className="text-gray-400 mb-6">Customize your Monaco Editor experience with comprehensive options</p>
+                    <p className="text-gray-400 mb-6">Customize your Monaco Editor experience with live preview</p>
                   </div>
 
-                  {/* Appearance Settings */}
+                  {/* Live Preview Toggle */}
+                  <div className="flex items-center justify-between p-4 bg-gray-700/30 rounded-lg border border-gray-600/30">
+                    <div>
+                      <h3 className="text-white font-medium">Live Preview</h3>
+                      <p className="text-gray-400 text-sm">See changes in real-time as you adjust settings</p>
+                    </div>
+                    <button
+                      onClick={() => setShowLivePreview(!showLivePreview)}
+                      className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                        showLivePreview ? 'bg-green-600' : 'bg-gray-600'
+                      }`}
+                    >
+                      <span
+                        className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                          showLivePreview ? 'translate-x-6' : 'translate-x-1'
+                        }`}
+                      />
+                    </button>
+                  </div>
+
+                  {/* Split Layout: Settings + Live Preview */}
+                  <div className={`${showLivePreview ? 'grid grid-cols-1 lg:grid-cols-2 gap-6' : ''}`}>
+
+                    {/* Settings Panel */}
+                    <div className="space-y-8">
+                      {/* Appearance Settings */}
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
                       <h3 className="text-lg font-semibold text-white flex items-center space-x-2">
@@ -779,26 +806,78 @@ const Settings = () => {
                     </div>
                   </div>
 
-                  {/* Action Buttons */}
-                  <div className="flex flex-col sm:flex-row gap-3 pt-6 border-t border-gray-700/50">
-                    <button
-                      onClick={handleSaveSettings}
-                      className="px-6 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium transition-colors flex items-center justify-center space-x-2"
-                    >
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                      </svg>
-                      <span>Save Editor Settings</span>
-                    </button>
-                    <button
-                      onClick={handleResetEditor}
-                      className="px-6 py-3 bg-gray-600 hover:bg-gray-700 text-white rounded-lg font-medium transition-colors flex items-center justify-center space-x-2"
-                    >
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                      </svg>
-                      <span>Reset All to Defaults</span>
-                    </button>
+                      {/* Action Buttons */}
+                      <div className="flex flex-col sm:flex-row gap-3 pt-6 border-t border-gray-700/50">
+                        <button
+                          onClick={handleSaveSettings}
+                          className="px-6 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium transition-colors flex items-center justify-center space-x-2"
+                        >
+                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                          </svg>
+                          <span>Save Editor Settings</span>
+                        </button>
+                        <button
+                          onClick={handleResetEditor}
+                          className="px-6 py-3 bg-gray-600 hover:bg-gray-700 text-white rounded-lg font-medium transition-colors flex items-center justify-center space-x-2"
+                        >
+                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                          </svg>
+                          <span>Reset All to Defaults</span>
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Live Preview Panel */}
+                    {showLivePreview && (
+                      <div className="space-y-4 lg:sticky lg:top-6 lg:self-start">
+                        <div className="flex items-center justify-between">
+                          <h3 className="text-lg font-semibold text-white flex items-center space-x-2">
+                            <span>👁️</span>
+                            <span>Live Preview</span>
+                          </h3>
+                          <div className="text-sm text-gray-400">
+                            Changes apply instantly
+                          </div>
+                        </div>
+
+                        <div className="bg-gray-700/30 rounded-lg border border-gray-600/30 overflow-hidden">
+                          <div className="h-[500px] lg:h-[600px]">
+                            <LiveEditorPreview />
+                          </div>
+                        </div>
+
+                        {/* Quick Settings Summary */}
+                        <div className="bg-gray-700/20 rounded-lg p-4 border border-gray-600/20">
+                          <h4 className="text-white font-medium mb-3 text-sm">Current Settings</h4>
+                          <div className="space-y-2 text-xs">
+                            <div className="flex justify-between">
+                              <span className="text-gray-400">Font Size:</span>
+                              <span className="text-green-400">{editorSettings.fontSize}px</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-gray-400">Font Family:</span>
+                              <span className="text-green-400">{editorSettings.fontFamily.split(',')[0].replace(/['"]/g, '')}</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-gray-400">Tab Size:</span>
+                              <span className="text-green-400">{editorSettings.tabSize}</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-gray-400">Word Wrap:</span>
+                              <span className="text-green-400 capitalize">{editorSettings.wordWrap}</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-gray-400">Minimap:</span>
+                              <span className={editorSettings.minimapEnabled ? 'text-green-400' : 'text-red-400'}>
+                                {editorSettings.minimapEnabled ? 'Enabled' : 'Disabled'}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
               )}

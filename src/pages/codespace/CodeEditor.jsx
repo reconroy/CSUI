@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react'
 import Editor from '@monaco-editor/react'
 import useEditorSettingsStore from '../../stores/editorSettingsStore'
+import useEditorSync from '../../hooks/useEditorSync'
 
 const CodeEditor = () => {
   const editorRef = useRef(null)
@@ -14,6 +15,9 @@ const CodeEditor = () => {
 
   // Editor settings from store
   const { getMonacoOptions } = useEditorSettingsStore()
+
+  // Register with editor sync system
+  const { registerEditor, unregisterEditor } = useEditorSync()
 
   // Prevent back navigation to login/auth pages
   useEffect(() => {
@@ -31,6 +35,9 @@ const CodeEditor = () => {
   const handleEditorDidMount = (editor, monaco) => {
     editorRef.current = editor;
     setEditorLoading(false);
+
+    // Register editor with sync system
+    registerEditor(editor);
 
     // Define custom theme matching your app's dark theme with green accents
     monaco.editor.defineTheme('codespace-dark', {
@@ -71,6 +78,15 @@ const CodeEditor = () => {
   const handleEditorChange = (value) => {
     setCode(value || '');
   };
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      if (editorRef.current) {
+        unregisterEditor(editorRef.current);
+      }
+    };
+  }, [unregisterEditor]);
 
   // Code execution simulation (you can replace this with actual API calls)
   const runCode = async () => {
