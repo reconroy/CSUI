@@ -37,10 +37,8 @@ const InnerLayout = () => {
         />
 
         {/* Main Content Area */}
-        <main className="flex-1 bg-gray-900/80 backdrop-blur-sm text-white overflow-auto min-w-0">
-          <div className="p-0">
-            <Outlet />
-          </div>
+        <main className="flex-1 bg-gray-900/80 backdrop-blur-sm text-white overflow-hidden min-w-0 h-full">
+          <Outlet />
         </main>
 
         {/* Secondary Panel (Right Sidebar) */}
