@@ -382,48 +382,46 @@ const Settings = () => {
                         Reset to defaults
                       </button>
                     </div>
-                    <div className="bg-gray-700/30 rounded-lg p-6 border border-gray-600/30">
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div className="bg-gray-700/30 rounded-lg p-4 border border-gray-600/30">
+                      <div className="grid grid-cols-3 gap-3">
 
                         {/* Font Size */}
                         <div>
-                          <label className="block text-white font-medium mb-2">Font Size</label>
-                          <div className="flex items-center space-x-3">
+                          <label className="block text-white font-medium mb-1 text-sm">Font Size</label>
+                          <div className="flex items-center space-x-2">
                             <input
                               type="range"
                               min="10"
                               max="24"
                               value={editorSettings.fontSize}
                               onChange={(e) => updateSetting('fontSize', parseInt(e.target.value))}
-                              className="flex-1 h-2 bg-gray-600 rounded-lg appearance-none cursor-pointer slider"
+                              className="flex-1 h-1 bg-gray-600 rounded-lg appearance-none cursor-pointer slider"
                             />
-                            <span className="text-green-400 font-mono text-sm w-8">{editorSettings.fontSize}px</span>
+                            <span className="text-green-400 font-mono text-xs w-8">{editorSettings.fontSize}px</span>
                           </div>
                         </div>
 
                         {/* Font Family */}
                         <div>
-                          <label className="block text-white font-medium mb-2">Font Family</label>
+                          <label className="block text-white font-medium mb-1 text-sm">Font Family</label>
                           <select
                             value={editorSettings.fontFamily}
                             onChange={(e) => updateSetting('fontFamily', e.target.value)}
-                            className="w-full bg-gray-600 text-white px-3 py-2 rounded-lg border border-gray-500 focus:border-green-500 focus:outline-none"
+                            className="w-full bg-gray-600 text-white px-2 py-1 rounded text-xs border border-gray-500 focus:border-green-500 focus:outline-none"
                           >
-                            <option value="'Fira Code', 'Cascadia Code', 'JetBrains Mono', 'SF Mono', Monaco, Menlo, 'Ubuntu Mono', monospace">Fira Code (Default)</option>
+                            <option value="'Fira Code', 'Cascadia Code', 'JetBrains Mono', 'SF Mono', Monaco, Menlo, 'Ubuntu Mono', monospace">Fira Code</option>
                             <option value="'Cascadia Code', 'Fira Code', 'JetBrains Mono', 'SF Mono', Monaco, Menlo, monospace">Cascadia Code</option>
                             <option value="'JetBrains Mono', 'Fira Code', 'Cascadia Code', 'SF Mono', Monaco, Menlo, monospace">JetBrains Mono</option>
                             <option value="'SF Mono', 'Monaco', 'Menlo', 'Fira Code', 'Cascadia Code', monospace">SF Mono</option>
                             <option value="Monaco, 'SF Mono', Menlo, 'Fira Code', 'Cascadia Code', monospace">Monaco</option>
                             <option value="Menlo, Monaco, 'SF Mono', 'Fira Code', 'Cascadia Code', monospace">Menlo</option>
-                            <option value="'Ubuntu Mono', 'Fira Code', 'Cascadia Code', monospace">Ubuntu Mono</option>
-                            <option value="'Courier New', Courier, monospace">Courier New</option>
                           </select>
                         </div>
 
                         {/* Line Height */}
                         <div>
-                          <label className="block text-white font-medium mb-2">Line Height</label>
-                          <div className="flex items-center space-x-3">
+                          <label className="block text-white font-medium mb-1 text-sm">Line Height</label>
+                          <div className="flex items-center space-x-2">
                             <input
                               type="range"
                               min="1"
@@ -431,21 +429,21 @@ const Settings = () => {
                               step="0.1"
                               value={editorSettings.lineHeight}
                               onChange={(e) => updateSetting('lineHeight', parseFloat(e.target.value))}
-                              className="flex-1 h-2 bg-gray-600 rounded-lg appearance-none cursor-pointer slider"
+                              className="flex-1 h-1 bg-gray-600 rounded-lg appearance-none cursor-pointer slider"
                             />
-                            <span className="text-green-400 font-mono text-sm w-8">{editorSettings.lineHeight}</span>
+                            <span className="text-green-400 font-mono text-xs w-8">{editorSettings.lineHeight}</span>
                           </div>
                         </div>
 
                         {/* Theme */}
                         <div>
-                          <label className="block text-white font-medium mb-2">Theme</label>
+                          <label className="block text-white font-medium mb-1 text-sm">Theme</label>
                           <select
                             value={editorSettings.theme}
                             onChange={(e) => updateSetting('theme', e.target.value)}
-                            className="w-full bg-gray-600 text-white px-3 py-2 rounded-lg border border-gray-500 focus:border-green-500 focus:outline-none"
+                            className="w-full bg-gray-600 text-white px-2 py-1 rounded text-xs border border-gray-500 focus:border-green-500 focus:outline-none"
                           >
-                            <option value="vs-dark">Dark (Default)</option>
+                            <option value="vs-dark">Dark</option>
                             <option value="vs">Light</option>
                             <option value="hc-black">High Contrast Dark</option>
                             <option value="hc-light">High Contrast Light</option>
@@ -454,11 +452,11 @@ const Settings = () => {
 
                         {/* Line Numbers */}
                         <div>
-                          <label className="block text-white font-medium mb-2">Line Numbers</label>
+                          <label className="block text-white font-medium mb-1 text-sm">Line Numbers</label>
                           <select
                             value={editorSettings.lineNumbers}
                             onChange={(e) => updateSetting('lineNumbers', e.target.value)}
-                            className="w-full bg-gray-600 text-white px-3 py-2 rounded-lg border border-gray-500 focus:border-green-500 focus:outline-none"
+                            className="w-full bg-gray-600 text-white px-2 py-1 rounded text-xs border border-gray-500 focus:border-green-500 focus:outline-none"
                           >
                             <option value="on">On</option>
                             <option value="off">Off</option>
@@ -467,13 +465,13 @@ const Settings = () => {
                           </select>
                         </div>
 
-                        {/* Render Whitespace */}
+                        {/* Show Whitespace */}
                         <div>
-                          <label className="block text-white font-medium mb-2">Show Whitespace</label>
+                          <label className="block text-white font-medium mb-1 text-sm">Show Whitespace</label>
                           <select
                             value={editorSettings.renderWhitespace}
                             onChange={(e) => updateSetting('renderWhitespace', e.target.value)}
-                            className="w-full bg-gray-600 text-white px-3 py-2 rounded-lg border border-gray-500 focus:border-green-500 focus:outline-none"
+                            className="w-full bg-gray-600 text-white px-2 py-1 rounded text-xs border border-gray-500 focus:border-green-500 focus:outline-none"
                           >
                             <option value="none">None</option>
                             <option value="boundary">Boundary</option>
@@ -500,32 +498,32 @@ const Settings = () => {
                         Reset to defaults
                       </button>
                     </div>
-                    <div className="bg-gray-700/30 rounded-lg p-6 border border-gray-600/30">
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div className="bg-gray-700/30 rounded-lg p-4 border border-gray-600/30">
+                      <div className="grid grid-cols-3 gap-3">
 
                         {/* Tab Size */}
                         <div>
-                          <label className="block text-white font-medium mb-2">Tab Size</label>
-                          <div className="flex items-center space-x-3">
+                          <label className="block text-white font-medium mb-1 text-sm">Tab Size</label>
+                          <div className="flex items-center space-x-2">
                             <input
                               type="range"
                               min="1"
                               max="8"
                               value={editorSettings.tabSize}
                               onChange={(e) => updateSetting('tabSize', parseInt(e.target.value))}
-                              className="flex-1 h-2 bg-gray-600 rounded-lg appearance-none cursor-pointer slider"
+                              className="flex-1 h-1 bg-gray-600 rounded-lg appearance-none cursor-pointer slider"
                             />
-                            <span className="text-green-400 font-mono text-sm w-8">{editorSettings.tabSize}</span>
+                            <span className="text-green-400 font-mono text-xs w-8">{editorSettings.tabSize}</span>
                           </div>
                         </div>
 
                         {/* Word Wrap */}
                         <div>
-                          <label className="block text-white font-medium mb-2">Word Wrap</label>
+                          <label className="block text-white font-medium mb-1 text-sm">Word Wrap</label>
                           <select
                             value={editorSettings.wordWrap}
                             onChange={(e) => updateSetting('wordWrap', e.target.value)}
-                            className="w-full bg-gray-600 text-white px-3 py-2 rounded-lg border border-gray-500 focus:border-green-500 focus:outline-none"
+                            className="w-full bg-gray-600 text-white px-2 py-1 rounded text-xs border border-gray-500 focus:border-green-500 focus:outline-none"
                           >
                             <option value="off">Off</option>
                             <option value="on">On</option>
@@ -536,11 +534,11 @@ const Settings = () => {
 
                         {/* Cursor Style */}
                         <div>
-                          <label className="block text-white font-medium mb-2">Cursor Style</label>
+                          <label className="block text-white font-medium mb-1 text-sm">Cursor Style</label>
                           <select
                             value={editorSettings.cursorStyle}
                             onChange={(e) => updateSetting('cursorStyle', e.target.value)}
-                            className="w-full bg-gray-600 text-white px-3 py-2 rounded-lg border border-gray-500 focus:border-green-500 focus:outline-none"
+                            className="w-full bg-gray-600 text-white px-2 py-1 rounded text-xs border border-gray-500 focus:border-green-500 focus:outline-none"
                           >
                             <option value="line">Line</option>
                             <option value="block">Block</option>
@@ -553,11 +551,11 @@ const Settings = () => {
 
                         {/* Cursor Blinking */}
                         <div>
-                          <label className="block text-white font-medium mb-2">Cursor Blinking</label>
+                          <label className="block text-white font-medium mb-1 text-sm">Cursor Blinking</label>
                           <select
                             value={editorSettings.cursorBlinking}
                             onChange={(e) => updateSetting('cursorBlinking', e.target.value)}
-                            className="w-full bg-gray-600 text-white px-3 py-2 rounded-lg border border-gray-500 focus:border-green-500 focus:outline-none"
+                            className="w-full bg-gray-600 text-white px-2 py-1 rounded text-xs border border-gray-500 focus:border-green-500 focus:outline-none"
                           >
                             <option value="blink">Blink</option>
                             <option value="smooth">Smooth</option>
@@ -569,11 +567,11 @@ const Settings = () => {
 
                         {/* Auto Indent */}
                         <div>
-                          <label className="block text-white font-medium mb-2">Auto Indent</label>
+                          <label className="block text-white font-medium mb-1 text-sm">Auto Indent</label>
                           <select
                             value={editorSettings.autoIndent}
                             onChange={(e) => updateSetting('autoIndent', e.target.value)}
-                            className="w-full bg-gray-600 text-white px-3 py-2 rounded-lg border border-gray-500 focus:border-green-500 focus:outline-none"
+                            className="w-full bg-gray-600 text-white px-2 py-1 rounded text-xs border border-gray-500 focus:border-green-500 focus:outline-none"
                           >
                             <option value="none">None</option>
                             <option value="keep">Keep</option>
@@ -585,11 +583,11 @@ const Settings = () => {
 
                         {/* Match Brackets */}
                         <div>
-                          <label className="block text-white font-medium mb-2">Match Brackets</label>
+                          <label className="block text-white font-medium mb-1 text-sm">Match Brackets</label>
                           <select
                             value={editorSettings.matchBrackets}
                             onChange={(e) => updateSetting('matchBrackets', e.target.value)}
-                            className="w-full bg-gray-600 text-white px-3 py-2 rounded-lg border border-gray-500 focus:border-green-500 focus:outline-none"
+                            className="w-full bg-gray-600 text-white px-2 py-1 rounded text-xs border border-gray-500 focus:border-green-500 focus:outline-none"
                           >
                             <option value="never">Never</option>
                             <option value="near">Near</option>
@@ -599,7 +597,7 @@ const Settings = () => {
                       </div>
 
                       {/* Toggle Options */}
-                      <div className="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      <div className="mt-4 space-y-1">
                         {[
                           { key: 'insertSpaces', label: 'Insert Spaces', desc: 'Use spaces instead of tabs' },
                           { key: 'detectIndentation', label: 'Detect Indentation', desc: 'Auto-detect indentation from content' },
@@ -608,20 +606,20 @@ const Settings = () => {
                           { key: 'trimAutoWhitespace', label: 'Trim Auto Whitespace', desc: 'Remove trailing whitespace' },
                           { key: 'selectOnLineNumbers', label: 'Select On Line Numbers', desc: 'Select line when clicking line number' }
                         ].map((option) => (
-                          <div key={option.key} className="flex items-center justify-between p-3 bg-gray-600/30 rounded-lg">
-                            <div>
-                              <label className="text-white font-medium text-sm">{option.label}</label>
-                              <p className="text-gray-400 text-xs">{option.desc}</p>
+                          <div key={option.key} className="flex items-center justify-between p-2 bg-gray-600/30 rounded text-xs">
+                            <div className="flex-1 min-w-0">
+                              <label className="text-white font-medium block truncate">{option.label}</label>
+                              <p className="text-gray-400 truncate">{option.desc}</p>
                             </div>
                             <button
                               onClick={() => updateSetting(option.key, !editorSettings[option.key])}
-                              className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${
+                              className={`ml-2 flex-shrink-0 relative inline-flex h-4 w-7 items-center rounded-full transition-colors ${
                                 editorSettings[option.key] ? 'bg-green-600' : 'bg-gray-600'
                               }`}
                             >
                               <span
-                                className={`inline-block h-3 w-3 transform rounded-full bg-white transition-transform ${
-                                  editorSettings[option.key] ? 'translate-x-5' : 'translate-x-1'
+                                className={`inline-block h-2 w-2 transform rounded-full bg-white transition-transform ${
+                                  editorSettings[option.key] ? 'translate-x-4' : 'translate-x-1'
                                 }`}
                               />
                             </button>
@@ -645,29 +643,29 @@ const Settings = () => {
                         Reset to defaults
                       </button>
                     </div>
-                    <div className="bg-gray-700/30 rounded-lg p-6 border border-gray-600/30">
+                    <div className="bg-gray-700/30 rounded-lg p-4 border border-gray-600/30">
 
                       {/* Minimap Settings */}
-                      <div className="mb-6">
-                        <h4 className="text-white font-medium mb-4 flex items-center space-x-2">
+                      <div className="mb-4">
+                        <h4 className="text-white font-medium mb-2 flex items-center space-x-2 text-sm">
                           <span>🗺️</span>
                           <span>Minimap</span>
                         </h4>
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                          <div className="flex items-center justify-between p-3 bg-gray-600/30 rounded-lg">
+                        <div className="grid grid-cols-3 gap-2">
+                          <div className="flex items-center justify-between p-2 bg-gray-600/30 rounded">
                             <div>
-                              <label className="text-white font-medium text-sm">Enable Minimap</label>
+                              <label className="text-white font-medium text-xs">Enable Minimap</label>
                               <p className="text-gray-400 text-xs">Show code overview</p>
                             </div>
                             <button
                               onClick={() => updateSetting('minimapEnabled', !editorSettings.minimapEnabled)}
-                              className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${
+                              className={`relative inline-flex h-4 w-7 items-center rounded-full transition-colors ${
                                 editorSettings.minimapEnabled ? 'bg-green-600' : 'bg-gray-600'
                               }`}
                             >
                               <span
-                                className={`inline-block h-3 w-3 transform rounded-full bg-white transition-transform ${
-                                  editorSettings.minimapEnabled ? 'translate-x-5' : 'translate-x-1'
+                                className={`inline-block h-2 w-2 transform rounded-full bg-white transition-transform ${
+                                  editorSettings.minimapEnabled ? 'translate-x-4' : 'translate-x-1'
                                 }`}
                               />
                             </button>
@@ -676,11 +674,11 @@ const Settings = () => {
                           {editorSettings.minimapEnabled && (
                             <>
                               <div>
-                                <label className="block text-white font-medium mb-2 text-sm">Minimap Side</label>
+                                <label className="block text-white font-medium mb-1 text-xs">Minimap Side</label>
                                 <select
                                   value={editorSettings.minimapSide}
                                   onChange={(e) => updateSetting('minimapSide', e.target.value)}
-                                  className="w-full bg-gray-600 text-white px-3 py-2 rounded-lg border border-gray-500 focus:border-green-500 focus:outline-none text-sm"
+                                  className="w-full bg-gray-600 text-white px-2 py-1 rounded text-xs border border-gray-500 focus:border-green-500 focus:outline-none"
                                 >
                                   <option value="right">Right</option>
                                   <option value="left">Left</option>
@@ -688,11 +686,11 @@ const Settings = () => {
                               </div>
 
                               <div>
-                                <label className="block text-white font-medium mb-2 text-sm">Minimap Size</label>
+                                <label className="block text-white font-medium mb-1 text-xs">Minimap Size</label>
                                 <select
                                   value={editorSettings.minimapSize}
                                   onChange={(e) => updateSetting('minimapSize', e.target.value)}
-                                  className="w-full bg-gray-600 text-white px-3 py-2 rounded-lg border border-gray-500 focus:border-green-500 focus:outline-none text-sm"
+                                  className="w-full bg-gray-600 text-white px-2 py-1 rounded text-xs border border-gray-500 focus:border-green-500 focus:outline-none"
                                 >
                                   <option value="proportional">Proportional</option>
                                   <option value="fill">Fill</option>
@@ -705,12 +703,12 @@ const Settings = () => {
                       </div>
 
                       {/* IntelliSense & Suggestions */}
-                      <div className="mb-6">
-                        <h4 className="text-white font-medium mb-4 flex items-center space-x-2">
+                      <div className="mb-4">
+                        <h4 className="text-white font-medium mb-2 flex items-center space-x-2 text-sm">
                           <span>🧠</span>
                           <span>IntelliSense & Suggestions</span>
                         </h4>
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <div className="space-y-1">
                           {[
                             { key: 'quickSuggestions', label: 'Quick Suggestions', desc: 'Show suggestions as you type' },
                             { key: 'suggestOnTriggerCharacters', label: 'Trigger Character Suggestions', desc: 'Suggest on trigger characters' },
@@ -719,10 +717,10 @@ const Settings = () => {
                             { key: 'hover.enabled', label: 'Hover Information', desc: 'Show hover information', nested: true },
                             { key: 'codeLens', label: 'Code Lens', desc: 'Show code lens information' }
                           ].map((option) => (
-                            <div key={option.key} className="flex items-center justify-between p-3 bg-gray-600/30 rounded-lg">
-                              <div>
-                                <label className="text-white font-medium text-sm">{option.label}</label>
-                                <p className="text-gray-400 text-xs">{option.desc}</p>
+                            <div key={option.key} className="flex items-center justify-between p-2 bg-gray-600/30 rounded text-xs">
+                              <div className="flex-1 min-w-0">
+                                <label className="text-white font-medium block truncate">{option.label}</label>
+                                <p className="text-gray-400 truncate">{option.desc}</p>
                               </div>
                               <button
                                 onClick={() => {
@@ -733,7 +731,7 @@ const Settings = () => {
                                     updateSetting(option.key, !editorSettings[option.key])
                                   }
                                 }}
-                                className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${
+                                className={`ml-2 flex-shrink-0 relative inline-flex h-4 w-7 items-center rounded-full transition-colors ${
                                   (option.nested
                                     ? editorSettings[option.key.split('.')[0]][option.key.split('.')[1]]
                                     : editorSettings[option.key]
@@ -741,11 +739,11 @@ const Settings = () => {
                                 }`}
                               >
                                 <span
-                                  className={`inline-block h-3 w-3 transform rounded-full bg-white transition-transform ${
+                                  className={`inline-block h-2 w-2 transform rounded-full bg-white transition-transform ${
                                     (option.nested
                                       ? editorSettings[option.key.split('.')[0]][option.key.split('.')[1]]
                                       : editorSettings[option.key]
-                                    ) ? 'translate-x-5' : 'translate-x-1'
+                                    ) ? 'translate-x-4' : 'translate-x-1'
                                   }`}
                                 />
                               </button>
@@ -756,11 +754,11 @@ const Settings = () => {
 
                       {/* Code Folding & Guides */}
                       <div>
-                        <h4 className="text-white font-medium mb-4 flex items-center space-x-2">
+                        <h4 className="text-white font-medium mb-2 flex items-center space-x-2 text-sm">
                           <span>📁</span>
                           <span>Code Folding & Guides</span>
                         </h4>
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <div className="space-y-1">
                           {[
                             { key: 'folding', label: 'Code Folding', desc: 'Enable code folding' },
                             { key: 'foldingHighlight', label: 'Folding Highlight', desc: 'Highlight folded regions' },
@@ -769,10 +767,10 @@ const Settings = () => {
                             { key: 'guides.indentation', label: 'Indentation Guides', desc: 'Show indentation guides', nested: true },
                             { key: 'renderIndentGuides', label: 'Render Indent Guides', desc: 'Render indentation guides' }
                           ].map((option) => (
-                            <div key={option.key} className="flex items-center justify-between p-3 bg-gray-600/30 rounded-lg">
-                              <div>
-                                <label className="text-white font-medium text-sm">{option.label}</label>
-                                <p className="text-gray-400 text-xs">{option.desc}</p>
+                            <div key={option.key} className="flex items-center justify-between p-2 bg-gray-600/30 rounded text-xs">
+                              <div className="flex-1 min-w-0">
+                                <label className="text-white font-medium block truncate">{option.label}</label>
+                                <p className="text-gray-400 truncate">{option.desc}</p>
                               </div>
                               <button
                                 onClick={() => {
@@ -783,7 +781,7 @@ const Settings = () => {
                                     updateSetting(option.key, !editorSettings[option.key])
                                   }
                                 }}
-                                className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${
+                                className={`ml-2 flex-shrink-0 relative inline-flex h-4 w-7 items-center rounded-full transition-colors ${
                                   (option.nested
                                     ? editorSettings[option.key.split('.')[0]][option.key.split('.')[1]]
                                     : editorSettings[option.key]
@@ -791,11 +789,11 @@ const Settings = () => {
                                 }`}
                               >
                                 <span
-                                  className={`inline-block h-3 w-3 transform rounded-full bg-white transition-transform ${
+                                  className={`inline-block h-2 w-2 transform rounded-full bg-white transition-transform ${
                                     (option.nested
                                       ? editorSettings[option.key.split('.')[0]][option.key.split('.')[1]]
                                       : editorSettings[option.key]
-                                    ) ? 'translate-x-5' : 'translate-x-1'
+                                    ) ? 'translate-x-4' : 'translate-x-1'
                                   }`}
                                 />
                               </button>
