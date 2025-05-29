@@ -1,16 +1,21 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { Outlet } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 import PrimaryPanel from '../components/PrimaryPanel'
 import SecondaryPanel from '../components/SecondaryPanel'
+import useUISettingsStore from '../stores/uiSettingsStore'
 
 const InnerLayout = () => {
-  const [isPrimaryPanelCollapsed, setIsPrimaryPanelCollapsed] = useState(false)
-
-  const handleTogglePrimaryPanel = () => {
-    setIsPrimaryPanelCollapsed(!isPrimaryPanelCollapsed);
-  };
+  const {
+    showFooter,
+    primaryPanelToggleBehavior,
+    secondaryPanelToggleBehavior,
+    isPrimaryPanelCollapsed,
+    isSecondaryPanelCollapsed,
+    togglePrimaryPanel,
+    toggleSecondaryPanel
+  } = useUISettingsStore()
 
   return (
     <div className="h-screen bg-gray-900 flex flex-col relative overflow-hidden">
@@ -24,16 +29,21 @@ const InnerLayout = () => {
 
       {/* Top Navbar */}
       <Navbar
-        onTogglePrimaryPanel={handleTogglePrimaryPanel}
+        onTogglePrimaryPanel={togglePrimaryPanel}
         isPrimaryPanelCollapsed={isPrimaryPanelCollapsed}
+        onToggleSecondaryPanel={toggleSecondaryPanel}
+        isSecondaryPanelCollapsed={isSecondaryPanelCollapsed}
+        showPrimaryToggle={true}
+        showSecondaryToggle={true}
       />
 
       {/* Main Layout */}
       <div className="flex flex-1 min-h-0 relative z-10">
-        {/* Primary Panel (Left Sidebar) */}
+        {/* Primary Panel (Left Sidebar) - Always visible */}
         <PrimaryPanel
           isCollapsed={isPrimaryPanelCollapsed}
-          onToggleCollapse={handleTogglePrimaryPanel}
+          onToggleCollapse={togglePrimaryPanel}
+          toggleBehavior={primaryPanelToggleBehavior}
         />
 
         {/* Main Content Area */}
@@ -41,12 +51,16 @@ const InnerLayout = () => {
           <Outlet />
         </main>
 
-        {/* Secondary Panel (Right Sidebar) */}
-        <SecondaryPanel />
+        {/* Secondary Panel (Right Sidebar) - Always visible */}
+        <SecondaryPanel
+          isCollapsed={isSecondaryPanelCollapsed}
+          onToggleCollapse={toggleSecondaryPanel}
+          toggleBehavior={secondaryPanelToggleBehavior}
+        />
       </div>
 
       {/* Footer */}
-      {/* <Footer /> */}
+      {showFooter && <Footer />}
     </div>
   )
 }

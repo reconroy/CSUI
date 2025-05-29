@@ -1,7 +1,14 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 
-const Navbar = ({ onTogglePrimaryPanel, isPrimaryPanelCollapsed }) => {
+const Navbar = ({
+  onTogglePrimaryPanel,
+  isPrimaryPanelCollapsed,
+  onToggleSecondaryPanel,
+  isSecondaryPanelCollapsed,
+  showPrimaryToggle = true,
+  showSecondaryToggle = false
+}) => {
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const [notificationsOpen, setNotificationsOpen] = useState(false)
@@ -78,16 +85,18 @@ const Navbar = ({ onTogglePrimaryPanel, isPrimaryPanelCollapsed }) => {
       <div className="flex items-center justify-between">
         {/* Left section - Sidebar toggle, Logo and breadcrumb */}
         <div className="flex items-center space-x-4">
-          {/* Sidebar toggle button */}
-          <button
-            onClick={onTogglePrimaryPanel}
-            className="p-2 rounded-lg hover:bg-gray-700/50 transition-colors"
-            title={isPrimaryPanelCollapsed ? 'Show codespaces panel' : 'Hide codespaces panel'}
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400 hover:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-            </svg>
-          </button>
+          {/* Primary Panel toggle button */}
+          {showPrimaryToggle && (
+            <button
+              onClick={onTogglePrimaryPanel}
+              className="p-2 rounded-lg hover:bg-gray-700/50 transition-colors"
+              title={isPrimaryPanelCollapsed ? 'Show codespaces panel' : 'Hide codespaces panel'}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400 hover:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </button>
+          )}
 
           <Link to="/dashboard" className="flex items-center">
             <div className="bg-green-500 w-8 h-8 rounded-lg mr-3 flex items-center justify-center shadow-lg shadow-green-500/20">
@@ -131,6 +140,19 @@ const Navbar = ({ onTogglePrimaryPanel, isPrimaryPanelCollapsed }) => {
 
         {/* Right section - Actions and Profile */}
         <div className="flex items-center space-x-4">
+          {/* Secondary Panel toggle button */}
+          {showSecondaryToggle && (
+            <button
+              onClick={onToggleSecondaryPanel}
+              className="p-2 rounded-lg hover:bg-gray-700/50 transition-colors"
+              title={isSecondaryPanelCollapsed ? 'Show secondary panel' : 'Hide secondary panel'}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400 hover:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2" />
+              </svg>
+            </button>
+          )}
+
           {/* Notifications */}
           <div className="relative" ref={notificationsRef}>
             <button
