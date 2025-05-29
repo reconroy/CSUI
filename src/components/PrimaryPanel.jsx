@@ -86,9 +86,8 @@ const PrimaryPanel = ({ isCollapsed, onToggleCollapse }) => {
   }
 
   return (
-    <aside className={`bg-gray-800/80 backdrop-blur-sm border-r border-gray-700/50 text-white transition-all duration-300 ${
-      isCollapsed ? 'w-16' : 'w-80'
-    } flex flex-col relative z-10`}>
+    <aside className={`bg-gray-800/80 backdrop-blur-sm border-r border-gray-700/50 text-white transition-all duration-300 ${isCollapsed ? 'w-16' : 'w-80'
+      } flex flex-col relative z-10`}>
 
       {/* Header */}
       {/* <div className="p-4 border-b border-gray-700/50">
@@ -140,21 +139,19 @@ const PrimaryPanel = ({ isCollapsed, onToggleCollapse }) => {
             <div className="flex">
               <button
                 onClick={() => setActiveTab('my-codespaces')}
-                className={`flex-1 py-3 px-4 text-sm font-medium transition-colors ${
-                  activeTab === 'my-codespaces'
+                className={`flex-1 py-3 px-4 text-sm font-medium transition-colors ${activeTab === 'my-codespaces'
                     ? 'text-green-400 border-b-2 border-green-400 bg-gray-700/30'
                     : 'text-gray-400 hover:text-white hover:bg-gray-700/20'
-                }`}
+                  }`}
               >
                 My Codespaces
               </button>
               <button
                 onClick={() => setActiveTab('shared')}
-                className={`flex-1 py-3 px-4 text-sm font-medium transition-colors ${
-                  activeTab === 'shared'
+                className={`flex-1 py-3 px-4 text-sm font-medium transition-colors ${activeTab === 'shared'
                     ? 'text-green-400 border-b-2 border-green-400 bg-gray-700/30'
                     : 'text-gray-400 hover:text-white hover:bg-gray-700/20'
-                }`}
+                  }`}
               >
                 Shared
               </button>
