@@ -3,7 +3,8 @@ import { Link } from 'react-router-dom'
 
 const Footer = () => {
   const currentYear = new Date().getFullYear()
-
+  const version = import.meta.env.VITE_CODE_SPACE_VERSION
+  console.log(version)
   return (
     <footer className="bg-gray-800/90 backdrop-blur-sm border-t border-gray-700/50 px-4 py-4 mt-auto">
       <div className="flex flex-col md:flex-row items-center justify-between text-sm text-gray-400">
@@ -19,7 +20,7 @@ const Footer = () => {
           </div>
           <span>&copy; {currentYear} CodeSpace. All rights reserved.</span>
           <span className="hidden md:inline">•</span>
-          <span className="hidden md:inline">Version 1.0.0</span>
+          <span className="hidden md:inline">v. {version}</span>
         </div>
 
         {/* Center section - Quick links */}
