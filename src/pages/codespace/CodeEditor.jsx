@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react'
 import Editor from '@monaco-editor/react'
+import useEditorSettingsStore from '../../stores/editorSettingsStore'
 
 const CodeEditor = () => {
   const editorRef = useRef(null)
@@ -10,6 +11,9 @@ const CodeEditor = () => {
   const [showTerminal, setShowTerminal] = useState(false)
   const [editorLoading, setEditorLoading] = useState(true)
   const [editorError, setEditorError] = useState(null)
+
+  // Editor settings from store
+  const { getMonacoOptions } = useEditorSettingsStore()
 
   // Prevent back navigation to login/auth pages
   useEffect(() => {
@@ -243,43 +247,7 @@ const CodeEditor = () => {
                   </div>
                 </div>
               }
-              options={{
-                minimap: { enabled: true },
-                fontSize: 14,
-                lineNumbers: 'on',
-                roundedSelection: false,
-                scrollBeyondLastLine: false,
-                automaticLayout: true,
-                tabSize: 2,
-                insertSpaces: true,
-                wordWrap: 'on',
-                contextmenu: true,
-                selectOnLineNumbers: true,
-                glyphMargin: true,
-                folding: true,
-                foldingStrategy: 'indentation',
-                showFoldingControls: 'always',
-                unfoldOnClickAfterEndOfLine: false,
-                bracketPairColorization: { enabled: true },
-                guides: {
-                  bracketPairs: true,
-                  indentation: true,
-                },
-                suggest: {
-                  showKeywords: true,
-                  showSnippets: true,
-                },
-                quickSuggestions: {
-                  other: true,
-                  comments: true,
-                  strings: true,
-                },
-                padding: { top: 10, bottom: 10 },
-                smoothScrolling: true,
-                cursorBlinking: 'smooth',
-                renderLineHighlight: 'all',
-                renderWhitespace: 'selection',
-              }}
+              options={getMonacoOptions()}
             />
           </div>
         </div>
