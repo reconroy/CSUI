@@ -3,23 +3,15 @@ import { Link } from 'react-router-dom'
 
 const Footer = () => {
   const currentYear = new Date().getFullYear()
-
+  const version = import.meta.env.VITE_APP_VERSION || '1.0.0'
   return (
     <footer className="bg-gray-800/90 backdrop-blur-sm border-t border-gray-700/50 px-4 py-4 mt-auto">
       <div className="flex flex-col md:flex-row items-center justify-between text-sm text-gray-400">
         {/* Left section - Copyright and version */}
         <div className="flex flex-col md:flex-row items-center space-y-1 md:space-y-0 md:space-x-4 mb-3 md:mb-0">
-          <div className="flex items-center space-x-2">
-            <div className="bg-green-500 w-5 h-5 rounded flex items-center justify-center">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 text-gray-900" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
-              </svg>
-            </div>
-            <span className="text-white font-medium">CodeSpace</span>
-          </div>
-          <span>&copy; {currentYear} CodeSpace. All rights reserved.</span>
+          <span>&copy; {currentYear} All rights reserved.</span>
           <span className="hidden md:inline">•</span>
-          <span className="hidden md:inline">Version 1.0.0</span>
+          <span className="hidden md:inline">Version {version}</span>
         </div>
 
         {/* Center section - Quick links */}

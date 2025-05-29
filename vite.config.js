@@ -14,5 +14,11 @@ export default defineConfig({
   build: {
     outDir: 'H:/CodeSpace/UI', // Custom build output directory
     emptyOutDir: true, // Empty the output directory before building
+  },
+  optimizeDeps: {
+    include: ['monaco-editor']
+  },
+  define: {
+    global: 'globalThis',
   }
 })

@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-const SecondaryPanel = () => {
+const SecondaryPanel = ({ isCollapsed = false, onToggleCollapse, toggleBehavior = 'shrink' }) => {
   const [activeTab, setActiveTab] = useState('activity')
 
   // Sample data for each tab
@@ -151,6 +151,53 @@ const SecondaryPanel = () => {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
         )
+    }
+  }
+
+  // Handle collapsed state based on toggle behavior
+  if (isCollapsed) {
+    if (toggleBehavior === 'shrink') {
+      // Shrink mode - show icons only
+      return (
+        <aside className="w-12 bg-gray-800/80 backdrop-blur-sm border-l border-gray-700/50 text-white relative z-10 flex flex-col">
+          {/* Collapsed Tab Icons */}
+          <div className="flex flex-col">
+            {tabs.map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => {
+                  setActiveTab(tab.id)
+                  onToggleCollapse && onToggleCollapse()
+                }}
+                className={`flex items-center justify-center py-3 px-2 text-xs font-medium transition-colors duration-200 ${
+                  activeTab === tab.id
+                    ? 'text-green-400 bg-gray-700/30'
+                    : 'text-gray-400 hover:text-white hover:bg-gray-700/20'
+                }`}
+                title={tab.label}
+              >
+                {tab.icon}
+              </button>
+            ))}
+          </div>
+        </aside>
+      )
+    } else if (toggleBehavior === 'minimize') {
+      // Minimize mode - show thin strip
+      return (
+        <aside className="w-2 bg-gray-800/80 backdrop-blur-sm border-l border-gray-700/50 text-white relative z-10 flex flex-col group hover:w-8 transition-all duration-200">
+          {/* Minimized strip with expand hint */}
+          <div className="flex-1 flex flex-col items-center justify-center">
+            <button
+              onClick={onToggleCollapse}
+              className="w-full h-full flex items-center justify-center text-gray-400 hover:text-green-400 transition-colors"
+              title="Restore secondary panel"
+            >
+              <div className="w-1 h-8 bg-gray-600 group-hover:bg-green-500 rounded-full transition-colors"></div>
+            </button>
+          </div>
+        </aside>
+      )
     }
   }
 
