@@ -300,6 +300,41 @@ const processUser = ({ name, age, email }: User): Partial<User> => ({
   const handleEditorDidMount = (editor, monaco) => {
     editorRef.current = editor
 
+    // Define custom theme matching the app's dark theme with green accents
+    monaco.editor.defineTheme('codespace-dark', {
+      base: 'vs-dark',
+      inherit: true,
+      rules: [
+        { token: 'comment', foreground: '6B7280', fontStyle: 'italic' },
+        { token: 'keyword', foreground: '10B981', fontStyle: 'bold' },
+        { token: 'string', foreground: 'FCD34D' },
+        { token: 'number', foreground: 'F87171' },
+        { token: 'function', foreground: '60A5FA' },
+        { token: 'variable', foreground: 'E5E7EB' },
+        { token: 'type', foreground: 'A78BFA' },
+      ],
+      colors: {
+        'editor.background': '#111827',
+        'editor.foreground': '#E5E7EB',
+        'editor.lineHighlightBackground': '#1F2937',
+        'editor.selectionBackground': '#10B98150',
+        'editor.inactiveSelectionBackground': '#10B98130',
+        'editorCursor.foreground': '#10B981',
+        'editorLineNumber.foreground': '#6B7280',
+        'editorLineNumber.activeForeground': '#10B981',
+        'editor.findMatchBackground': '#10B98150',
+        'editor.findMatchHighlightBackground': '#10B98130',
+        'editorWidget.background': '#1F2937',
+        'editorWidget.border': '#374151',
+        'editorSuggestWidget.background': '#1F2937',
+        'editorSuggestWidget.border': '#374151',
+        'editorSuggestWidget.selectedBackground': '#10B98150',
+      }
+    });
+
+    // Set the custom theme
+    monaco.editor.setTheme('codespace-dark');
+
     // Register editor with sync system
     registerEditor(editor)
 
@@ -356,7 +391,7 @@ const processUser = ({ name, age, email }: User): Partial<User> => ({
           value={code}
           onChange={setCode}
           onMount={handleEditorDidMount}
-          theme="vs-dark"
+          theme="codespace-dark"
           options={{
             ...getMonacoOptions(),
             readOnly: false,

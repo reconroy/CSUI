@@ -383,7 +383,7 @@ const Settings = () => {
                       </button>
                     </div>
                     <div className="bg-gray-700/30 rounded-lg p-4 border border-gray-600/30">
-                      <div className="grid grid-cols-3 gap-3">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
 
                         {/* Font Size */}
                         <div>
@@ -499,7 +499,7 @@ const Settings = () => {
                       </button>
                     </div>
                     <div className="bg-gray-700/30 rounded-lg p-4 border border-gray-600/30">
-                      <div className="grid grid-cols-3 gap-3">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
 
                         {/* Tab Size */}
                         <div>
@@ -597,7 +597,7 @@ const Settings = () => {
                       </div>
 
                       {/* Toggle Options */}
-                      <div className="mt-4 space-y-1">
+                      <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-2">
                         {[
                           { key: 'insertSpaces', label: 'Insert Spaces', desc: 'Use spaces instead of tabs' },
                           { key: 'detectIndentation', label: 'Detect Indentation', desc: 'Auto-detect indentation from content' },
@@ -607,13 +607,13 @@ const Settings = () => {
                           { key: 'selectOnLineNumbers', label: 'Select On Line Numbers', desc: 'Select line when clicking line number' }
                         ].map((option) => (
                           <div key={option.key} className="flex items-center justify-between p-2 bg-gray-600/30 rounded text-xs">
-                            <div className="flex-1 min-w-0">
+                            <div className="flex-1 min-w-0 pr-2">
                               <label className="text-white font-medium block truncate">{option.label}</label>
                               <p className="text-gray-400 truncate">{option.desc}</p>
                             </div>
                             <button
                               onClick={() => updateSetting(option.key, !editorSettings[option.key])}
-                              className={`ml-2 flex-shrink-0 relative inline-flex h-4 w-7 items-center rounded-full transition-colors ${
+                              className={`flex-shrink-0 relative inline-flex h-4 w-7 items-center rounded-full transition-colors ${
                                 editorSettings[option.key] ? 'bg-green-600' : 'bg-gray-600'
                               }`}
                             >
@@ -651,15 +651,15 @@ const Settings = () => {
                           <span>🗺️</span>
                           <span>Minimap</span>
                         </h4>
-                        <div className="grid grid-cols-3 gap-2">
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
                           <div className="flex items-center justify-between p-2 bg-gray-600/30 rounded">
-                            <div>
-                              <label className="text-white font-medium text-xs">Enable Minimap</label>
-                              <p className="text-gray-400 text-xs">Show code overview</p>
+                            <div className="flex-1 min-w-0 pr-2">
+                              <label className="text-white font-medium text-xs block truncate">Enable Minimap</label>
+                              <p className="text-gray-400 text-xs truncate">Show code overview</p>
                             </div>
                             <button
                               onClick={() => updateSetting('minimapEnabled', !editorSettings.minimapEnabled)}
-                              className={`relative inline-flex h-4 w-7 items-center rounded-full transition-colors ${
+                              className={`flex-shrink-0 relative inline-flex h-4 w-7 items-center rounded-full transition-colors ${
                                 editorSettings.minimapEnabled ? 'bg-green-600' : 'bg-gray-600'
                               }`}
                             >
@@ -708,7 +708,7 @@ const Settings = () => {
                           <span>🧠</span>
                           <span>IntelliSense & Suggestions</span>
                         </h4>
-                        <div className="space-y-1">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                           {[
                             { key: 'quickSuggestions', label: 'Quick Suggestions', desc: 'Show suggestions as you type' },
                             { key: 'suggestOnTriggerCharacters', label: 'Trigger Character Suggestions', desc: 'Suggest on trigger characters' },
@@ -718,7 +718,7 @@ const Settings = () => {
                             { key: 'codeLens', label: 'Code Lens', desc: 'Show code lens information' }
                           ].map((option) => (
                             <div key={option.key} className="flex items-center justify-between p-2 bg-gray-600/30 rounded text-xs">
-                              <div className="flex-1 min-w-0">
+                              <div className="flex-1 min-w-0 pr-2">
                                 <label className="text-white font-medium block truncate">{option.label}</label>
                                 <p className="text-gray-400 truncate">{option.desc}</p>
                               </div>
@@ -731,7 +731,7 @@ const Settings = () => {
                                     updateSetting(option.key, !editorSettings[option.key])
                                   }
                                 }}
-                                className={`ml-2 flex-shrink-0 relative inline-flex h-4 w-7 items-center rounded-full transition-colors ${
+                                className={`flex-shrink-0 relative inline-flex h-4 w-7 items-center rounded-full transition-colors ${
                                   (option.nested
                                     ? editorSettings[option.key.split('.')[0]][option.key.split('.')[1]]
                                     : editorSettings[option.key]
@@ -758,7 +758,7 @@ const Settings = () => {
                           <span>📁</span>
                           <span>Code Folding & Guides</span>
                         </h4>
-                        <div className="space-y-1">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                           {[
                             { key: 'folding', label: 'Code Folding', desc: 'Enable code folding' },
                             { key: 'foldingHighlight', label: 'Folding Highlight', desc: 'Highlight folded regions' },
@@ -768,7 +768,7 @@ const Settings = () => {
                             { key: 'renderIndentGuides', label: 'Render Indent Guides', desc: 'Render indentation guides' }
                           ].map((option) => (
                             <div key={option.key} className="flex items-center justify-between p-2 bg-gray-600/30 rounded text-xs">
-                              <div className="flex-1 min-w-0">
+                              <div className="flex-1 min-w-0 pr-2">
                                 <label className="text-white font-medium block truncate">{option.label}</label>
                                 <p className="text-gray-400 truncate">{option.desc}</p>
                               </div>
@@ -781,7 +781,7 @@ const Settings = () => {
                                     updateSetting(option.key, !editorSettings[option.key])
                                   }
                                 }}
-                                className={`ml-2 flex-shrink-0 relative inline-flex h-4 w-7 items-center rounded-full transition-colors ${
+                                className={`flex-shrink-0 relative inline-flex h-4 w-7 items-center rounded-full transition-colors ${
                                   (option.nested
                                     ? editorSettings[option.key.split('.')[0]][option.key.split('.')[1]]
                                     : editorSettings[option.key]
