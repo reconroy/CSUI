@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react'
 import Editor from '@monaco-editor/react'
-import useEditorSettingsStore from '../../stores/editorSettingsStore'
+import useEditorSettingsStore from '../../store/editorSettingsStore'
 import useEditorSync from '../../hooks/useEditorSync'
 
 const CodeEditor = () => {
