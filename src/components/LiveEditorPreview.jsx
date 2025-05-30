@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react'
 import Editor from '@monaco-editor/react'
-import useEditorSettingsStore from '../stores/editorSettingsStore'
+import useEditorSettingsStore from '../store/editorSettingsStore'
 import useEditorSync from '../hooks/useEditorSync'
 
 const LiveEditorPreview = () => {

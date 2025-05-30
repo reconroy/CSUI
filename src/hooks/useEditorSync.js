@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import useEditorSettingsStore from '../stores/editorSettingsStore'
+import useEditorSettingsStore from '../store/editorSettingsStore'
 
 /**
  * Hook to sync editor settings with Monaco Editor instances

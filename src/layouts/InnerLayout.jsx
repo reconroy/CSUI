@@ -4,7 +4,7 @@ import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 import PrimaryPanel from '../components/PrimaryPanel'
 import SecondaryPanel from '../components/SecondaryPanel'
-import useUISettingsStore from '../stores/uiSettingsStore'
+import useUISettingsStore from '../store/uiSettingsStore'
 
 const InnerLayout = () => {
   const {

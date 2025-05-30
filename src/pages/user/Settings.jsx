@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import useUISettingsStore from '../../stores/uiSettingsStore'
-import useEditorSettingsStore from '../../stores/editorSettingsStore'
+import useUISettingsStore from '../../store/uiSettingsStore'
+import useEditorSettingsStore from '../../store/editorSettingsStore'
 import LiveEditorPreview from '../../components/LiveEditorPreview'
 
 const Settings = () => {
