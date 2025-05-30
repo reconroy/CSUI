@@ -3,12 +3,15 @@ import useUISettingsStore from '../../store/uiSettingsStore'
 import useEditorSettingsStore from '../../store/editorSettingsStore'
 import LiveEditorPreview from '../../components/LiveEditorPreview'
 import api from '../../services/api'
+import { useToast } from '../../contexts/ToastContext'
 
 const Settings = () => {
   const [activeTab, setActiveTab] = useState('ui')
-  const [message, setMessage] = useState('')
   const [showLivePreview, setShowLivePreview] = useState(true)
   const [isLoading, setIsLoading] = useState(false)
+
+  // Toast notifications
+  const { showSuccess, showError, showInfo } = useToast()
 
   // Load user settings on component mount
   useEffect(() => {
@@ -20,13 +23,11 @@ const Settings = () => {
 
         if (response.success && response.settings) {
           console.log('User settings loaded:', response.settings)
-          setMessage('Settings loaded successfully!')
-          setTimeout(() => setMessage(''), 3000)
+          showInfo('Settings loaded successfully!')
         }
       } catch (error) {
         console.error('Error loading user settings:', error)
-        setMessage('Failed to load settings. Using defaults.')
-        setTimeout(() => setMessage(''), 3000)
+        showError('Failed to load settings. Using defaults.')
       } finally {
         setIsLoading(false)
       }
@@ -106,12 +107,10 @@ const Settings = () => {
       // Save UI settings to backend
       await api.updateSettingsCategory('ui', currentUISettings)
 
-      setMessage('UI settings saved successfully!')
-      setTimeout(() => setMessage(''), 3000)
+      showSuccess('UI settings saved successfully!')
     } catch (error) {
       console.error('Error saving UI settings:', error)
-      setMessage('Error saving settings. Please try again.')
-      setTimeout(() => setMessage(''), 3000)
+      showError('Error saving settings. Please try again.')
     } finally {
       setIsLoading(false)
     }
@@ -127,12 +126,10 @@ const Settings = () => {
       // Reset UI settings in backend
       await api.resetSettings('ui')
 
-      setMessage('UI settings reset to defaults!')
-      setTimeout(() => setMessage(''), 3000)
+      showSuccess('UI settings reset to defaults!')
     } catch (error) {
       console.error('Error resetting UI settings:', error)
-      setMessage('Error resetting settings. Please try again.')
-      setTimeout(() => setMessage(''), 3000)
+      showError('Error resetting settings. Please try again.')
     } finally {
       setIsLoading(false)
     }
@@ -148,12 +145,10 @@ const Settings = () => {
       // Reset editor settings in backend
       await api.resetSettings('editor')
 
-      setMessage('Editor settings reset to defaults!')
-      setTimeout(() => setMessage(''), 3000)
+      showSuccess('Editor settings reset to defaults!')
     } catch (error) {
       console.error('Error resetting editor settings:', error)
-      setMessage('Error resetting settings. Please try again.')
-      setTimeout(() => setMessage(''), 3000)
+      showError('Error resetting settings. Please try again.')
     } finally {
       setIsLoading(false)
     }
@@ -166,12 +161,10 @@ const Settings = () => {
       // Save current editor settings to backend
       await api.updateSettingsCategory('editor', editorSettings)
 
-      setMessage('Editor settings saved successfully!')
-      setTimeout(() => setMessage(''), 3000)
+      showSuccess('Editor settings saved successfully!')
     } catch (error) {
       console.error('Error saving editor settings:', error)
-      setMessage('Error saving editor settings. Please try again.')
-      setTimeout(() => setMessage(''), 3000)
+      showError('Error saving editor settings. Please try again.')
     } finally {
       setIsLoading(false)
     }
@@ -179,8 +172,7 @@ const Settings = () => {
 
   const handleResetEditorCategory = (category) => {
     resetCategory(category)
-    setMessage(`${category} settings reset to defaults!`)
-    setTimeout(() => setMessage(''), 3000)
+    showSuccess(`${category} settings reset to defaults!`)
   }
 
   const tabs = [
@@ -199,44 +191,30 @@ const Settings = () => {
           <p className="text-gray-400">Customize your CodeSpace experience</p>
         </div>
 
-        {/* Success Message */}
-        {message && (
-          <div className="mb-6 p-4 bg-green-600/20 border border-green-500/30 rounded-lg">
-            <div className="flex items-center space-x-2">
-              <svg className="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-              </svg>
-              <span className="text-green-400">{message}</span>
-            </div>
+        {/* Top Tab Navigation */}
+        <div className="mb-6">
+          <div className="border-b border-gray-700/50">
+            <nav className="flex space-x-8">
+              {tabs.map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`flex items-center space-x-2 py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
+                    activeTab === tab.id
+                      ? 'border-green-500 text-green-400'
+                      : 'border-transparent text-gray-400 hover:text-gray-300 hover:border-gray-600'
+                  }`}
+                >
+                  <span className="text-lg">{tab.icon}</span>
+                  <span>{tab.label}</span>
+                </button>
+              ))}
+            </nav>
           </div>
-        )}
+        </div>
 
-        <div className="flex flex-col lg:flex-row gap-6">
-          {/* Sidebar Navigation */}
-          <div className="lg:w-64 flex-shrink-0">
-            <div className="bg-gray-800/50 backdrop-blur-sm rounded-lg border border-gray-700/50 p-4">
-              <nav className="space-y-2">
-                {tabs.map((tab) => (
-                  <button
-                    key={tab.id}
-                    onClick={() => setActiveTab(tab.id)}
-                    className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-colors ${
-                      activeTab === tab.id
-                        ? 'bg-green-600/20 text-green-400 border border-green-500/30'
-                        : 'text-gray-300 hover:bg-gray-700/50 hover:text-white'
-                    }`}
-                  >
-                    <span className="text-lg">{tab.icon}</span>
-                    <span className="font-medium">{tab.label}</span>
-                  </button>
-                ))}
-              </nav>
-            </div>
-          </div>
-
-          {/* Main Content */}
-          <div className="flex-1">
-            <div className="bg-gray-800/50 backdrop-blur-sm rounded-lg border border-gray-700/50 p-6">
+        {/* Main Content */}
+        <div className="bg-gray-800/50 backdrop-blur-sm rounded-lg border border-gray-700/50 p-6">
 
               {/* UI Layout Settings */}
               {activeTab === 'ui' && (
@@ -1002,8 +980,6 @@ const Settings = () => {
                 </div>
               )}
 
-            </div>
-          </div>
         </div>
       </div>
     </div>
