@@ -1,12 +1,39 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import useUISettingsStore from '../../store/uiSettingsStore'
 import useEditorSettingsStore from '../../store/editorSettingsStore'
 import LiveEditorPreview from '../../components/LiveEditorPreview'
+import api from '../../services/api'
 
 const Settings = () => {
   const [activeTab, setActiveTab] = useState('ui')
   const [message, setMessage] = useState('')
   const [showLivePreview, setShowLivePreview] = useState(true)
+  const [isLoading, setIsLoading] = useState(false)
+
+  // Load user settings on component mount
+  useEffect(() => {
+    const loadUserSettings = async () => {
+      try {
+        setIsLoading(true)
+        // This will automatically create default settings for the user if they don't exist
+        const response = await api.getSettings()
+
+        if (response.success && response.settings) {
+          console.log('User settings loaded:', response.settings)
+          setMessage('Settings loaded successfully!')
+          setTimeout(() => setMessage(''), 3000)
+        }
+      } catch (error) {
+        console.error('Error loading user settings:', error)
+        setMessage('Failed to load settings. Using defaults.')
+        setTimeout(() => setMessage(''), 3000)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    loadUserSettings()
+  }, [])
 
   // UI Settings from store
   const {
@@ -64,21 +91,90 @@ const Settings = () => {
     }))
   }
 
-  const handleSaveSettings = () => {
-    setMessage('Settings saved successfully!')
-    setTimeout(() => setMessage(''), 3000)
+  const handleSaveSettings = async () => {
+    try {
+      setIsLoading(true)
+
+      // Get current UI settings from store
+      const currentUISettings = {
+        showFooter,
+        allowMultiplePanels,
+        primaryPanelToggleBehavior,
+        secondaryPanelToggleBehavior
+      }
+
+      // Save UI settings to backend
+      await api.updateSettingsCategory('ui', currentUISettings)
+
+      setMessage('UI settings saved successfully!')
+      setTimeout(() => setMessage(''), 3000)
+    } catch (error) {
+      console.error('Error saving UI settings:', error)
+      setMessage('Error saving settings. Please try again.')
+      setTimeout(() => setMessage(''), 3000)
+    } finally {
+      setIsLoading(false)
+    }
   }
 
-  const handleResetUI = () => {
-    resetUISettings()
-    setMessage('UI settings reset to defaults!')
-    setTimeout(() => setMessage(''), 3000)
+  const handleResetUI = async () => {
+    try {
+      setIsLoading(true)
+
+      // Reset UI settings in store
+      resetUISettings()
+
+      // Reset UI settings in backend
+      await api.resetSettings('ui')
+
+      setMessage('UI settings reset to defaults!')
+      setTimeout(() => setMessage(''), 3000)
+    } catch (error) {
+      console.error('Error resetting UI settings:', error)
+      setMessage('Error resetting settings. Please try again.')
+      setTimeout(() => setMessage(''), 3000)
+    } finally {
+      setIsLoading(false)
+    }
   }
 
-  const handleResetEditor = () => {
-    resetEditorDefaults()
-    setMessage('Editor settings reset to defaults!')
-    setTimeout(() => setMessage(''), 3000)
+  const handleResetEditor = async () => {
+    try {
+      setIsLoading(true)
+
+      // Reset editor settings in store
+      resetEditorDefaults()
+
+      // Reset editor settings in backend
+      await api.resetSettings('editor')
+
+      setMessage('Editor settings reset to defaults!')
+      setTimeout(() => setMessage(''), 3000)
+    } catch (error) {
+      console.error('Error resetting editor settings:', error)
+      setMessage('Error resetting settings. Please try again.')
+      setTimeout(() => setMessage(''), 3000)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const handleSaveEditorSettings = async () => {
+    try {
+      setIsLoading(true)
+
+      // Save current editor settings to backend
+      await api.updateSettingsCategory('editor', editorSettings)
+
+      setMessage('Editor settings saved successfully!')
+      setTimeout(() => setMessage(''), 3000)
+    } catch (error) {
+      console.error('Error saving editor settings:', error)
+      setMessage('Error saving editor settings. Please try again.')
+      setTimeout(() => setMessage(''), 3000)
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   const handleResetEditorCategory = (category) => {
@@ -807,7 +903,7 @@ const Settings = () => {
                       {/* Action Buttons */}
                       <div className="flex flex-col sm:flex-row gap-3 pt-6 border-t border-gray-700/50">
                         <button
-                          onClick={handleSaveSettings}
+                          onClick={handleSaveEditorSettings}
                           className="px-6 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium transition-colors flex items-center justify-center space-x-2"
                         >
                           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
