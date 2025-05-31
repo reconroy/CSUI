@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
+import useAuthStore from '../store/authStore'
 
 const Navbar = ({
   onTogglePrimaryPanel,
@@ -16,6 +17,12 @@ const Navbar = ({
   const notificationsRef = useRef(null)
   const navigate = useNavigate()
   const location = useLocation()
+
+  // Get user data from auth store
+  const { user, getProfile, isLoading } = useAuthStore()
+  console.log("User:", user);
+  // console.log("Is Loading:", isLoading);
+  // console.log("Get Profile:", getProfile);
 
   // Sample notifications data
   const [notifications] = useState([
@@ -211,9 +218,11 @@ const Navbar = ({
               className="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-700/50 transition-colors focus:outline-none"
             >
               <div className="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center text-gray-900 font-medium">
-                U
+                {user.profilePicture
+                  ? <img src={user.profilePicture} alt="Profile" className="w-full h-full object-cover rounded-full" />
+                  : (user.name).split(" ")[0][0]}
               </div>
-              <span className="hidden md:block text-white text-sm font-medium">User</span>
+              <span className="hidden md:block text-white text-sm font-medium">{(user.name).split(" ")[0]}</span>
               <svg xmlns="http://www.w3.org/2000/svg" className={`h-4 w-4 text-gray-400 transition-transform duration-200 ${profileDropdownOpen ? 'rotate-180' : ''}`} viewBox="0 0 20 20" fill="currentColor">
                 <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
               </svg>
