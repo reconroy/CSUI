@@ -2,13 +2,17 @@ import React, { useEffect, useState, useRef } from 'react'
 import Editor from '@monaco-editor/react'
 import useEditorSettingsStore from '../../store/editorSettingsStore'
 import useEditorSync from '../../hooks/useEditorSync'
-import Terminal from './components/Terminal'
+import Terminal from '../../components/Terminal'
+import judge0Service, { LANGUAGE_NAMES } from '../../services/judge0Service'
 
 const CodeEditor = () => {
   const editorRef = useRef(null)
   const [code, setCode] = useState('// Welcome to CodeSpace!\nconsole.log("Hello, World!");')
   const [language, setLanguage] = useState('javascript')
   const [output, setOutput] = useState('')
+  const [error, setError] = useState('')
+  const [executionTime, setExecutionTime] = useState(null)
+  const [memoryUsage, setMemoryUsage] = useState(null)
   const [isRunning, setIsRunning] = useState(false)
   const [showTerminal, setShowTerminal] = useState(false)
   const [editorLoading, setEditorLoading] = useState(true)
@@ -90,49 +94,82 @@ const CodeEditor = () => {
     };
   }, [unregisterEditor]);
 
-  // Code execution simulation (you can replace this with actual API calls)
+  // Code execution using Judge0 API
   const runCode = async () => {
+    if (!judge0Service.isConfigured()) {
+      setError('Judge0 API key not configured. Please add REACT_APP_RAPIDAPI_KEY to your .env file.');
+      setShowTerminal(true);
+      return;
+    }
+
     setIsRunning(true);
     setShowTerminal(true);
-    setOutput('Running code...\n');
+    setOutput('');
+    setError('');
+    setExecutionTime(null);
+    setMemoryUsage(null);
 
     try {
-      // Simulate code execution delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      const result = await judge0Service.executeCode(code, language);
 
-      // Mock output based on language
-      let mockOutput = '';
-      switch (language) {
-        case 'javascript':
-          mockOutput = '> node index.js\nHello, World!\nCode executed successfully!';
-          break;
-        case 'python':
-          mockOutput = '> python main.py\nHello, World!\nCode executed successfully!';
-          break;
-        case 'html':
-          mockOutput = '> Opening in browser...\nHTML rendered successfully!';
-          break;
-        default:
-          mockOutput = `> Running ${language} code...\nOutput: Hello, World!\nExecution completed!`;
+      if (result.success) {
+        setOutput(result.output || 'Code executed successfully (no output)');
+      } else {
+        setError(result.error || `Execution failed: ${result.status}`);
       }
 
-      setOutput(mockOutput);
+      setExecutionTime(result.executionTime);
+      setMemoryUsage(result.memoryUsage);
+
     } catch (error) {
-      setOutput(`Error: ${error.message}`);
+      console.error('Code execution error:', error);
+      setError(`Execution failed: ${error.message}`);
     } finally {
       setIsRunning(false);
     }
   };
 
-  const languages = [
-    { value: 'javascript', label: 'JavaScript', icon: '🟨' },
-    { value: 'typescript', label: 'TypeScript', icon: '🔷' },
-    { value: 'python', label: 'Python', icon: '🐍' },
-    { value: 'html', label: 'HTML', icon: '🌐' },
-    { value: 'css', label: 'CSS', icon: '🎨' },
-    { value: 'json', label: 'JSON', icon: '📄' },
-    { value: 'markdown', label: 'Markdown', icon: '📝' },
-  ];
+  // Clear terminal output
+  const clearTerminal = () => {
+    setOutput('');
+    setError('');
+    setExecutionTime(null);
+    setMemoryUsage(null);
+  };
+
+  // Get available languages from Judge0 service
+  const languages = judge0Service.getAvailableLanguages().map(lang => ({
+    value: lang.id,
+    label: lang.name,
+    icon: getLanguageIcon(lang.id)
+  }));
+
+  // Helper function to get language icons
+  function getLanguageIcon(lang) {
+    const icons = {
+      javascript: '🟨',
+      python: '�',
+      java: '☕',
+      cpp: '⚡',
+      c: '�',
+      csharp: '🔷',
+      php: '🐘',
+      ruby: '💎',
+      go: '🐹',
+      rust: '🦀',
+      kotlin: '🎯',
+      swift: '�',
+      typescript: '🔷',
+      sql: '🗄️',
+      bash: '💻',
+      r: '�',
+      scala: '⚖️',
+      perl: '🐪',
+      lua: '🌙',
+      dart: '🎯'
+    };
+    return icons[lang] || '�';
+  }
 
   return (
     <div className="w-full h-full flex flex-col bg-gray-900 overflow-hidden">
