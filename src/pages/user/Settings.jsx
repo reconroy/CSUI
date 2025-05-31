@@ -183,7 +183,7 @@ const Settings = () => {
   ]
 
   return (
-    <div className="h-full bg-gray-900 text-white overflow-auto">
+    <div className="h-full overflow-y-auto custom-scrollbar bg-gray-900 text-white">
       <div className="max-w-6xl mx-auto p-6">
         {/* Header */}
         <div className="mb-8">

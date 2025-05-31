@@ -182,7 +182,7 @@ const Navbar = ({
                 <div className="px-4 py-2 border-b border-gray-700">
                   <h3 className="text-white font-medium">Notifications</h3>
                 </div>
-                <div className="max-h-64 overflow-y-auto">
+                <div className="max-h-64 overflow-y-auto thin-scrollbar">
                   {notifications.map((notification) => (
                     <div key={notification.id} className={`px-4 py-3 hover:bg-gray-700/50 ${!notification.read ? 'bg-gray-700/20' : ''}`}>
                       <div className="flex items-start space-x-3">

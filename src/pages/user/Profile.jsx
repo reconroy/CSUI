@@ -374,7 +374,8 @@ const Profile = () => {
   }
 
   return (
-    <div className="bg-gray-800/80 backdrop-blur-sm p-6 rounded-xl border border-gray-700/50 shadow-xl">
+    <div className="h-full overflow-y-auto custom-scrollbar">
+      <div className="bg-gray-800/80 backdrop-blur-sm p-6 rounded-xl border border-gray-700/50 shadow-xl m-6">
       {/* Header with Cover Photo and Profile Picture */}
       <div className="relative mb-8">
         {/* Cover Photo Area */}
@@ -919,6 +920,7 @@ const Profile = () => {
           </div>
         </div>
       )}
+      </div>
     </div>
   )
 }
