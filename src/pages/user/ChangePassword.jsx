@@ -49,7 +49,8 @@ const ChangePassword = () => {
   }
 
   return (
-    <div className="bg-gray-800/70 backdrop-blur-sm p-6 rounded-lg border border-gray-700/50 shadow-lg">
+    <div className="h-full overflow-y-auto custom-scrollbar">
+      <div className="bg-gray-800/70 backdrop-blur-sm p-6 rounded-lg border border-gray-700/50 shadow-lg m-6">
       <h2 className="text-2xl font-bold text-white mb-6">Change Password</h2>
 
       {error && (
@@ -123,6 +124,7 @@ const ChangePassword = () => {
           <li>Include at least one number</li>
           <li>Include at least one special character</li>
         </ul>
+      </div>
       </div>
     </div>
   )

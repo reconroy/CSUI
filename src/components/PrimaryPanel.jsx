@@ -206,7 +206,7 @@ const PrimaryPanel = ({ isCollapsed, onToggleCollapse, toggleBehavior = 'shrink'
       </div>
 
       {/* Codespace Lists */}
-      <div className="flex-1 overflow-y-auto">
+      <div className="flex-1 overflow-y-auto thin-scrollbar">
         {activeTab === 'my-codespaces' && (
           <div className="p-4">
             <div className="flex items-center justify-between mb-4">

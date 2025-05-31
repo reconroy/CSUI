@@ -224,7 +224,7 @@ const SecondaryPanel = ({ isCollapsed = false, onToggleCollapse, toggleBehavior 
       </div>
 
       {/* Tab Content */}
-      <div className="flex-1 overflow-y-auto">
+      <div className="flex-1 overflow-y-auto thin-scrollbar">
         {/* Activity Tab */}
         {activeTab === 'activity' && (
           <div className="p-4">

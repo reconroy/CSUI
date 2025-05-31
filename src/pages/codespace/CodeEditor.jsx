@@ -293,7 +293,7 @@ const CodeEditor = () => {
                 </button>
               </div>
             </div>
-            <div className="flex-1 p-4 overflow-auto min-h-0">
+            <div className="flex-1 p-4 overflow-auto min-h-0 custom-scrollbar">
               <pre className="text-green-400 font-mono text-sm whitespace-pre-wrap">
                 {output || 'Ready to run code...'}
               </pre>
